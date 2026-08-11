@@ -3,11 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FORECAST } from "@/lib/forecast";
-import { BACKDROPS, SCRIMS } from "@/lib/backdrops";
+import { BACKDROPS, SCRIMS, backdropFor } from "@/lib/backdrops";
 import { useQueue } from "@/lib/useQueue";
 import { useIdle } from "@/lib/useIdle";
 import { displayArtist, displayTitle } from "@/lib/player";
 import { Backdrop } from "./Backdrop";
+import { Mark } from "./Mark";
 import { Seek, Controls } from "./Transport";
 
 const label = "font-mono text-[10px] uppercase tracking-[0.2em]";
@@ -18,7 +19,7 @@ export function Forecast() {
 
   // The queue resets itself when the track list changes identity, so switching
   // weather starts that room from the top.
-  const { hostRef, ready, playing, elapsed, duration, track, notice, skip, toggle, seek } =
+  const { hostRef, ready, playing, elapsed, duration, index, track, notice, skip, toggle, seek } =
     useQueue(room.tracks);
 
   // Once it's playing and you've stopped touching anything, the interface gets
@@ -34,7 +35,7 @@ export function Forecast() {
           came to look at, not a backdrop for a wordmark. */}
       <Backdrop
         id={room.id}
-        sources={BACKDROPS[room.id] ?? []}
+        sources={backdropFor(BACKDROPS[room.id] ?? [], index)}
         scrim={SCRIMS[room.id] ?? "from-black/40 via-transparent to-black/75"}
       />
 
@@ -44,7 +45,10 @@ export function Forecast() {
 
       <div className="relative flex min-h-dvh flex-col px-6 py-6 sm:px-10">
         <header className={`${label} ${chrome} flex items-center justify-between gap-4 text-ink-muted`}>
-          <span className="text-ink">Forecast</span>
+          <span className="flex items-center gap-2 text-ink">
+            <Mark className="size-3.5" />
+            Forecast
+          </span>
           <Link href="/" className="transition-colors hover:text-ink">
             ← Lokey
           </Link>

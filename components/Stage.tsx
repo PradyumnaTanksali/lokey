@@ -7,6 +7,7 @@ import { BACKDROPS, backdropFor } from "@/lib/backdrops";
 import { useQueue } from "@/lib/useQueue";
 import { displayArtist, displayTitle } from "@/lib/player";
 import { Backdrop } from "./Backdrop";
+import { Mark } from "./Mark";
 import { Art } from "./Art";
 import { Seek, Controls } from "./Transport";
 
@@ -76,12 +77,10 @@ export function Stage() {
         </header>
 
         <div className="flex flex-1 flex-col items-center justify-center py-16">
-          <h1 className="rise text-center font-serif text-[clamp(3.5rem,13vw,10rem)] leading-[0.84] tracking-[-0.02em] [text-shadow:0_2px_50px_rgba(0,0,0,0.65)]">
+          <Mark className="rise size-7 text-ink/70 [filter:drop-shadow(0_2px_18px_rgba(0,0,0,0.6))]" />
+          <h1 className="rise mt-7 text-center font-serif text-[clamp(3.5rem,13vw,10rem)] leading-[0.84] tracking-[-0.02em] [text-shadow:0_2px_50px_rgba(0,0,0,0.65)]" style={{ animationDelay: "80ms" }}>
             Lokey
           </h1>
-          <p className={`${label} rise mt-8 text-ink-faint`} style={{ animationDelay: "120ms" }}>
-            Slow R&amp;B · sessions &amp; sets · kept lowkey
-          </p>
         </div>
 
         {/* No panel. The type sits straight on the footage, and the scrubber is
