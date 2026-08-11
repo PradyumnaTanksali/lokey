@@ -14,14 +14,14 @@ const display = Instrument_Serif({
   display: "swap",
 });
 
-const title = "Room Service · Slow R&B, sessions & sets";
+const title = "Lokey · Slow R&B, sessions & sets";
 const description =
-  "A listening room for slow R&B — DJ sessions, radio sets, and late-night singles. Plus Forecast, where you pick the weather and watch it. No login, no algorithm, no front desk. A sample build by Scene.";
+  "A listening room for slow R&B — DJ sessions, radio sets, and late-night singles. Plus Forecast, where you pick the weather and watch it. No login, no algorithm, nothing to sign up for. A sample build by Scene.";
 
 export const metadata: Metadata = {
   title,
   description,
-  openGraph: { title, description, type: "website", siteName: "Room Service" },
+  openGraph: { title, description, type: "website", siteName: "Lokey" },
   twitter: { card: "summary_large_image", title, description },
 };
 

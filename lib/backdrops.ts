@@ -17,7 +17,7 @@
  *  visible seam at the loop point. Crossfading needs two stacked <video>s and a
  *  timeupdate listener — not worth it for a backdrop nobody stares at. */
 export const BACKDROPS: Record<string, string[]> = {
-  // Room Service walks this pool one step per track, so the order is the
+  // Lokey walks this pool one step per track, so the order is the
   // rotation: no two neighbours are the same kind of shot. Bokeh → rain glass →
   // alley → smoke → asphalt → facade, and around again.
   room: [

@@ -1,8 +1,8 @@
-# Room Service
+# Lokey
 
 Two rooms, one player.
 
-- **`/`** — Room Service. One rotation of chill R&B, led by DJ sessions and
+- **`/`** — Lokey. One rotation of chill R&B, led by DJ sessions and
   sets: Noise Complaints' *A Late Night R&B Experience*, The Lot Radio, Boiler
   Room, Soulection, NTS. No tabs, no tracklist, no options — a place, not an app.
 - **`/forecast`** — pick the weather, it gets scored in lofi: Downpour, Golden
@@ -72,4 +72,4 @@ moves on.
 
 ## Deploy
 
-Vercel. `main` is production.
+Vercel, at [lokey.corsw.in](https://lokey.corsw.in). `main` is production.

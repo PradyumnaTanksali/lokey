@@ -6,7 +6,7 @@ import { step } from "./player";
 import { useYouTube } from "./useYouTube";
 
 /** Queue state, keyboard, and the dead-track recovery — the part both layouts
- *  share. The markup is where Room Service and Forecast actually differ. */
+ *  share. The markup is where Lokey and Forecast actually differ. */
 export function useQueue(tracks: Track[]) {
   const [index, setIndex] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);

@@ -8,7 +8,7 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
-  openGraph: { title, description, type: "website", siteName: "Room Service" },
+  openGraph: { title, description, type: "website", siteName: "Lokey" },
   twitter: { card: "summary_large_image", title, description },
 };
 

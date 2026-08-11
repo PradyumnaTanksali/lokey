@@ -77,12 +77,10 @@ export function Stage() {
 
         <div className="flex flex-1 flex-col items-center justify-center py-16">
           <h1 className="rise text-center font-serif text-[clamp(3.5rem,13vw,10rem)] leading-[0.84] tracking-[-0.02em] [text-shadow:0_2px_50px_rgba(0,0,0,0.65)]">
-            Room
-            <br />
-            Service
+            Lokey
           </h1>
           <p className={`${label} rise mt-8 text-ink-faint`} style={{ animationDelay: "120ms" }}>
-            Slow R&amp;B · sessions &amp; sets · no front desk
+            Slow R&amp;B · sessions &amp; sets · kept lowkey
           </p>
         </div>
 

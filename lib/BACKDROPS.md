@@ -5,7 +5,7 @@ vendored** — the bytes come off their CDN, not our bandwidth. Each url was
 verified returning `200 video/mp4` with a `Referer` header set, so hotlinking is
 not blocked.
 
-## Room Service — a pool of 16
+## Lokey — a pool of 16
 
 `backdropFor()` walks this pool one step per track, so the room changes with the
 record. The order is the rotation: no two neighbours are the same kind of shot,
@@ -69,7 +69,7 @@ logos, no readable signage, no recognisable faces — so this clause does not bi
 ## Adding or replacing one
 
 ```bash
-curl -sIL -H "Referer: https://room-service-scene.vercel.app/" "<CDN_URL>" \
+curl -sIL -H "Referer: https://lokey.corsw.in/" "<CDN_URL>" \
   | grep -iE '^(HTTP/|content-type|content-length)'
 ```
 

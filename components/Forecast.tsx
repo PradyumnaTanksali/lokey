@@ -30,7 +30,7 @@ export function Forecast() {
 
   return (
     <>
-      {/* Lighter scrim than Room Service: here the footage is the thing you
+      {/* Lighter scrim than the main room: here the footage is the thing you
           came to look at, not a backdrop for a wordmark. */}
       <Backdrop
         id={room.id}
@@ -46,7 +46,7 @@ export function Forecast() {
         <header className={`${label} ${chrome} flex items-center justify-between gap-4 text-ink-muted`}>
           <span className="text-ink">Forecast</span>
           <Link href="/" className="transition-colors hover:text-ink">
-            ← Room Service
+            ← Lokey
           </Link>
         </header>
 
