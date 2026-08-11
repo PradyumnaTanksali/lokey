@@ -26,6 +26,7 @@ export const BACKDROPS: Record<string, string[]> = {
   // two consecutive tracks land you in the same kind of place. The first four
   // are the originals the brief was built around.
   room: [
+    "https://cdn.pixabay.com/video/2020/01/21/31450-386957656_small.mp4", // rain and fog through forest · 40s
     "https://cdn.pixabay.com/video/2016/11/15/6400-191716659_medium.mp4", // defocused bokeh, near-black
     "https://cdn.pixabay.com/video/2025/10/20/310990_medium.mp4", // rain on glass, high-rise behind · 30s
     "https://cdn.pixabay.com/video/2019/07/24/25477-350507890_small.mp4", // snow over the Vosges, France · 19s
@@ -36,7 +37,6 @@ export const BACKDROPS: Record<string, string[]> = {
     "https://cdn.pixabay.com/video/2016/11/09/6310-190925747_large.mp4", // snowflakes falling on dark · 33s
     "https://cdn.pixabay.com/video/2016/06/27/3589-172488261_tiny.mp4", // a boat on a foggy sea · 61s
     "https://cdn.pixabay.com/video/2016/05/21/3249-167599912_medium.mp4", // Hong Kong harbour at nightfall · 29s
-    "https://cdn.pixabay.com/video/2020/01/21/31450-386957656_small.mp4", // rain and fog through forest · 40s
     "https://cdn.pixabay.com/video/2025/12/29/324730_small.mp4", // dark room, rain on the window · 30s
     "https://cdn.pixabay.com/video/2017/01/13/7328-199383367_small.mp4", // snow-covered pines from above · 28s
     "https://cdn.pixabay.com/video/2024/10/03/234440_medium.mp4", // rain outside, fireplace burning · 60s

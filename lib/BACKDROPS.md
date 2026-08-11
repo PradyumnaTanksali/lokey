@@ -10,22 +10,23 @@ not blocked.
 `backdropFor()` walks this pool one step per track, so the room changes with the
 record. **The order is the rotation**: city, then landscape, then something
 abstract, then somewhere warm, so no two consecutive tracks put you in the same
-kind of place. That is why it is not sorted by theme. Entries 1, 2, 4 and 6 are
-the originals the rest of the pool was matched to.
+kind of place. That is why it is not sorted by theme. Entries 2, 3, 5 and 7 are
+the originals the rest of the pool was matched to; entry 1 was promoted to the
+front by request.
 
 | # | Clip | Source page | Size | Length |
 |---|---|---|---|---|
-| 1 | defocused bokeh, near-black | https://pixabay.com/videos/bokeh-blur-lights-night-city-6400/ | 2.1 MB | — |
-| 2 | rain on glass, high-rise behind | https://pixabay.com/videos/rain-city-highrise-building-lights-310990/ | 3.4 MB | 30s |
-| 3 | snow over the Vosges, France | https://pixabay.com/videos/vosges-france-snow-nature-25477/ | 7.1 MB | 19s |
-| 4 | quiet Japanese alley, streetlights | https://pixabay.com/videos/japan-street-night-urban-352850/ | 3.0 MB | — |
-| 5 | rainforest under rain and fog | https://pixabay.com/videos/trees-forest-fog-rain-rainy-day-212102/ | 5.5 MB | 40s |
-| 6 | blue smoke on black | https://pixabay.com/videos/smoke-blue-smoke-blue-9551/ | 3.8 MB | — |
-| 7 | Manhattan, Empire State | https://pixabay.com/videos/empire-state-building-new-york-usa-1575/ | 5.6 MB | 22s |
-| 8 | snowflakes falling on dark | https://pixabay.com/videos/snowflakes-snow-winter-xmas-6310/ | 2.0 MB | 33s |
-| 9 | a boat on a foggy sea | https://pixabay.com/videos/boat-fog-ocean-sea-horizon-water-3589/ | 4.6 MB | 61s |
-| 10 | Hong Kong harbour at nightfall | https://pixabay.com/videos/city-nightfall-hong-kong-sunset-3249/ | 8.4 MB | 29s |
-| 11 | rain and fog through forest | https://pixabay.com/videos/forest-rain-fog-trees-nature-31450/ | 8.5 MB | 40s |
+| 1 | rain and fog through forest | https://pixabay.com/videos/forest-rain-fog-trees-nature-31450/ | 8.5 MB | 40s |
+| 2 | defocused bokeh, near-black | https://pixabay.com/videos/bokeh-blur-lights-night-city-6400/ | 2.1 MB | — |
+| 3 | rain on glass, high-rise behind | https://pixabay.com/videos/rain-city-highrise-building-lights-310990/ | 3.4 MB | 30s |
+| 4 | snow over the Vosges, France | https://pixabay.com/videos/vosges-france-snow-nature-25477/ | 7.1 MB | 19s |
+| 5 | quiet Japanese alley, streetlights | https://pixabay.com/videos/japan-street-night-urban-352850/ | 3.0 MB | — |
+| 6 | rainforest under rain and fog | https://pixabay.com/videos/trees-forest-fog-rain-rainy-day-212102/ | 5.5 MB | 40s |
+| 7 | blue smoke on black | https://pixabay.com/videos/smoke-blue-smoke-blue-9551/ | 3.8 MB | — |
+| 8 | Manhattan, Empire State | https://pixabay.com/videos/empire-state-building-new-york-usa-1575/ | 5.6 MB | 22s |
+| 9 | snowflakes falling on dark | https://pixabay.com/videos/snowflakes-snow-winter-xmas-6310/ | 2.0 MB | 33s |
+| 10 | a boat on a foggy sea | https://pixabay.com/videos/boat-fog-ocean-sea-horizon-water-3589/ | 4.6 MB | 61s |
+| 11 | Hong Kong harbour at nightfall | https://pixabay.com/videos/city-nightfall-hong-kong-sunset-3249/ | 8.4 MB | 29s |
 | 12 | dark room, rain on the window | https://pixabay.com/videos/dark-room-rain-loop-environment-324730/ | 3.7 MB | 30s |
 | 13 | snow-covered pines from above | https://pixabay.com/videos/snowy-trees-above-winter-landscape-7328/ | 5.7 MB | 28s |
 | 14 | rain outside, fireplace burning | https://pixabay.com/videos/ai-generated-rain-fireplace-autumn-234440/ | 7.5 MB | 60s |
