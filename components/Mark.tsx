@@ -1,17 +1,18 @@
-/** The Lokey mark: a crescent, cut as one circle minus another.
+/** The Lokey mark: a door left ajar.
  *
- *  Reads as a moon at any size and as a record label at large ones, which is
- *  the whole product in one shape. Single path, no strokes, so it survives
- *  being 16px in a browser tab. */
+ *  A tall panel split by a narrow gap, with the thin edge of the door swung
+ *  past it. You're being let into a room — which is the whole product.
+ *
+ *  Two filled shapes, no strokes, so it holds together when a browser tab
+ *  renders it at 16px. The gap is deliberately wider than a real door's would
+ *  be: at small sizes a hairline gap closes up and the mark becomes a block. */
 export function Mark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" className={className}>
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M16 2a14 14 0 1 1 0 28 14 14 0 0 1 0-28zm5 3a11 11 0 1 0 0 22 11 11 0 0 0 0-22z"
-        fill="currentColor"
-      />
+      {/* the door */}
+      <path d="M7.5 3h11.5v26H7.5A1.5 1.5 0 0 1 6 27.5v-23A1.5 1.5 0 0 1 7.5 3z" fill="currentColor" />
+      {/* its edge, swung open */}
+      <path d="M22.5 3H24a1.5 1.5 0 0 1 1.5 1.5v23A1.5 1.5 0 0 1 24 29h-1.5V3z" fill="currentColor" />
     </svg>
   );
 }

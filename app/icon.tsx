@@ -4,9 +4,11 @@ export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
 /** Generated as a PNG rather than shipped as icon.svg, because Safari ignores
- *  SVG favicons entirely. Same crescent as `components/Mark.tsx`, drawn with
- *  two circles since Satori has no SVG path support: a light disc with a dark
- *  one laid over its right side. */
+ *  SVG favicons outright.
+ *
+ *  Same door-ajar mark as `components/Mark.tsx`, but drawn with its own
+ *  proportions: at 32px the gap has to be wider and the swung edge thicker than
+ *  the display version, or both close up into a single block. */
 export default function Icon() {
   return new ImageResponse(
     (
@@ -23,23 +25,23 @@ export default function Icon() {
         <div
           style={{
             position: "absolute",
-            top: 3,
-            left: 3,
-            width: 26,
-            height: 26,
-            borderRadius: 13,
+            top: 5,
+            left: 6,
+            width: 12,
+            height: 22,
+            borderRadius: 2,
             background: "#F7F4EF",
           }}
         />
         <div
           style={{
             position: "absolute",
-            top: 6,
-            left: 9,
-            width: 20,
-            height: 20,
-            borderRadius: 10,
-            background: "#0C0A09",
+            top: 5,
+            left: 22,
+            width: 4,
+            height: 22,
+            borderRadius: 2,
+            background: "#F7F4EF",
           }}
         />
       </div>
