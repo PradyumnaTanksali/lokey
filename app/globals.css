@@ -41,10 +41,10 @@
 
 /* Each room's colour identity, independent of whether its video has loaded. */
 [data-bg="room"]        .bg-base { background: radial-gradient(70% 60% at 30% 25%, #3A2418, transparent 70%), radial-gradient(60% 55% at 75% 70%, #1E2438, transparent 72%), #0C0A09; }
-[data-bg="downpour"]    .bg-base { background: radial-gradient(75% 60% at 40% 20%, #24384A, transparent 72%), #0B1016; }
-[data-bg="golden-hour"] .bg-base { background: radial-gradient(80% 65% at 50% 15%, #7A4520, transparent 72%), #180F0A; }
-[data-bg="fog"]         .bg-base { background: radial-gradient(80% 70% at 45% 45%, #3C4650, transparent 74%), #10151A; }
-[data-bg="small-hours"] .bg-base { background: radial-gradient(70% 60% at 60% 25%, #241E3C, transparent 72%), #08070E; }
+[data-bg="downpour"]    .bg-base { background: radial-gradient(75% 60% at 45% 30%, #2C3A33, transparent 72%), #0F1412; }
+[data-bg="golden-hour"] .bg-base { background: radial-gradient(85% 70% at 50% 25%, #8A4326, transparent 74%), #1C0F0C; }
+[data-bg="fog"]         .bg-base { background: radial-gradient(60% 50% at 50% 62%, #6B4B32, transparent 70%), radial-gradient(85% 70% at 45% 35%, #2B3540, transparent 74%), #0D1116; }
+[data-bg="small-hours"] .bg-base { background: radial-gradient(50% 40% at 50% 75%, #7A5A2E, transparent 70%), radial-gradient(80% 65% at 55% 25%, #1F2440, transparent 74%), #08070E; }
 
 /* Video off when the viewer asked for less motion — the base carries the page. */
 @media (prefers-reduced-motion: reduce) {

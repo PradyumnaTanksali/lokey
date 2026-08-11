@@ -7,15 +7,16 @@
  *
  *  The second url in each slot is a *different clip*, not another rendition of
  *  the same one — a fallback is worth more when it can survive the first clip
- *  being taken down. All are the `_medium` (1280x720) rendition: this sits
- *  behind a scrim and a blur, so 1080p would be paying for detail nobody sees.
+ *  being taken down. Mostly `_medium`; a few are `_small` because the source was
+ *  4K and the medium rung blew the size budget while the small one is still
+ *  1080p. Never assume `_large` means 1080p.
  *
  *  Every url verified 200 `video/mp4` with a Referer set. Provenance, sizes and
  *  licence terms are in BACKDROPS.md next to this file.
  *
- *  ponytail: the star-trail clips rotate continuously, so `small-hours` has a
- *  visible seam at the loop point. Crossfading needs two stacked <video>s and a
- *  timeupdate listener — not worth it for a backdrop nobody stares at. */
+ *  ponytail: some clips have a visible seam at the loop point. Crossfading needs
+ *  two stacked <video>s and a timeupdate listener — worth revisiting for
+ *  Forecast, where people actually watch, not for the room behind a wordmark. */
 export const BACKDROPS: Record<string, string[]> = {
   // Lokey walks this pool one step per track, so the order is the
   // rotation: no two neighbours are the same kind of shot. Bokeh → rain glass →
@@ -38,25 +39,34 @@ export const BACKDROPS: Record<string, string[]> = {
     "https://cdn.pixabay.com/video/2025/09/22/305668_medium.mp4", // wet road, colour in the puddles
     "https://cdn.pixabay.com/video/2025/01/06/251066_small.mp4", // night skyline, slow drift
   ],
-  // rain plate on a dark ground, so it loops essentially perfectly
+  // Forecast is drawn, not filmed — you sit and watch these, so they are scenes
+  // rather than texture. See BACKDROPS.md for why only one of them is genuine pixel
+  // art: Pixabay's pixel-art *video* library is about a dozen clips, mostly
+  // vertical phone wallpapers or pre-2024 uploads that fail the type check.
+
+  // genuine 8-bit: pixel landscape, watchtower, falling rain
   downpour: [
-    "https://cdn.pixabay.com/video/2026/08/02/368081_medium.mp4",
-    "https://cdn.pixabay.com/video/2019/12/15/30224-380473802_medium.mp4",
+    "https://cdn.pixabay.com/video/2026/02/28/337111_medium.mp4",
+    "https://cdn.pixabay.com/video/2025/04/09/270983_medium.mp4", // cabin in the rain, warm window
   ],
-  // sun rays through moving cloud; the brightest slot, hence the heavier scrim
+  // rooftop silhouette over a sunset skyline — the brightest slot, hence the
+  // heavier scrim below
   "golden-hour": [
-    "https://cdn.pixabay.com/video/2016/09/13/5151-183300171_medium.mp4",
-    "https://cdn.pixabay.com/video/2017/11/05/12767-241697386_medium.mp4",
+    "https://cdn.pixabay.com/video/2025/03/23/266892_small.mp4",
+    "https://cdn.pixabay.com/video/2026/01/25/330218_medium.mp4", // writing at sunset
   ],
-  // fog rolling in waves over terrain, dim and desaturated
+  // roadside motel wrapped in drifting fog. Its fallback is photoreal rather
+  // than drawn — the only illustrated fog loop on Pixabay is the primary, and a
+  // fallback that only appears if the primary dies is worth more than none.
   fog: [
-    "https://cdn.pixabay.com/video/2017/01/07/7096-198553490_medium.mp4",
-    "https://cdn.pixabay.com/video/2017/01/07/7098-198553487_medium.mp4",
+    "https://cdn.pixabay.com/video/2024/07/07/219912_medium.mp4",
+    "https://cdn.pixabay.com/video/2026/05/07/351133_medium.mp4", // foggy birch forest, moonlit
   ],
-  // star trails over an alpine horizon
+  // gas station under a starry sky — same illustrator and batch as the motel
+  // above, so switching between those two rooms reads as one world
   "small-hours": [
-    "https://cdn.pixabay.com/video/2017/03/02/8097-207208860_medium.mp4",
-    "https://cdn.pixabay.com/video/2016/12/31/6960-197634412_medium.mp4",
+    "https://cdn.pixabay.com/video/2024/07/07/219916_medium.mp4",
+    "https://cdn.pixabay.com/video/2025/12/03/319697_medium.mp4", // night room, rainy city outside
   ],
 };
 

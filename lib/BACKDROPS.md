@@ -37,11 +37,42 @@ brands, and a wall of legible signs fights the wordmark anyway.
 
 ## Forecast — one per weather, plus a fallback
 
-Each weather has two entries. The second is a **different clip**, not another
-rendition of the same one — a fallback is worth more when it can survive a
-takedown.
+Drawn rather than filmed: on this page the video is the thing you came to watch,
+so it needs to be a scene, not a texture.
 
-See `backdrops.ts` for the current urls and per-slot notes.
+| Slot | Clip | Style | Source page | Size |
+|---|---|---|---|---|
+| `downpour` | pixel landscape, watchtower, rain | **8-bit** | https://pixabay.com/videos/pixel-8-bit-artwork-lofi-nature-337111/ | 0.76 MB |
+| `downpour` (fallback) | cabin in the rain, warm window | illustrated | https://pixabay.com/videos/live-wallpaper-cozy-cabin-rainy-day-270983/ | 0.89 MB |
+| `golden-hour` | rooftop silhouette over a sunset skyline | illustrated | https://pixabay.com/videos/anime-cityscape-silhouette-sunset-266892/ | 5.35 MB |
+| `golden-hour` (fallback) | writing at sunset | illustrated | https://pixabay.com/videos/man-anime-sunset-writing-lo-fi-330218/ | 1.42 MB |
+| `fog` | roadside motel in drifting fog | illustrated | https://pixabay.com/videos/motel-night-fog-mist-loop-219912/ | 1.05 MB |
+| `fog` (fallback) | moonlit birch forest in fog | photoreal | https://pixabay.com/videos/ai-generated-kupala-night-forest-351133/ | 1.21 MB |
+| `small-hours` | gas station under a starry sky | illustrated | https://pixabay.com/videos/gas-station-cartoon-night-stars-219916/ | 1.40 MB |
+| `small-hours` (fallback) | night room, rainy city outside | illustrated | https://pixabay.com/videos/lofi-nature-anime-to-relax-night-319697/ | 1.72 MB |
+
+`fog` and `small-hours` are the same illustrator and the same batch, so moving
+between those two rooms reads as one world.
+
+### Why only one of these is real 8-bit
+
+Pixabay's pixel-art **video** library is roughly a dozen clips, and almost none
+of them survive contact with the requirements. `pixelart` returns zero results;
+`pixel art`, `8 bit`, `16 bit` and `retro game background` return overwhelmingly
+live-action nature footage and abstract motion graphics. Of what genuinely is
+pixel art:
+
+- The best of it is **vertical phone wallpaper** — the whole "AI Generated
+  Wallpaper Pixel Anime" series, plus a pixel-art campfire scene, all portrait.
+- Most of the rest was **uploaded 2021–2023**, and everything from that window
+  serves `binary/octet-stream` rather than `video/mp4`. That killed a pixel
+  island sunset, a pixel room with a storm outside, and a pixel rooftop scene.
+- A genuine pixel lofi-study-room scene (`248092`) matches the brief exactly and
+  is **33.9 MB** at medium, 24.3 MB at small.
+
+So `downpour` is real 8-bit and the other three are illustrated/anime lofi in
+the same register. The substitution is deliberate and worth revisiting if the
+look matters more than the source: commissioned pixel loops, or another library.
 
 ## Licence
 
