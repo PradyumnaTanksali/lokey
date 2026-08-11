@@ -3,14 +3,14 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
-const title = "Baithak · Chill R&B, ek room mein.";
+const title = "Room Service · Slow R&B, four rooms";
 const description =
-  "A listening room for slow R&B. Pick a mood, press play, stop scrolling. Plays from YouTube, hands off to Spotify. No login, no algorithm. A Scene sample build.";
+  "A listening room for slow R&B, and a Forecast room that scores the weather in lofi. Pick a room, press play. No login, no algorithm, no front desk. A sample build by Scene.";
 
 export const metadata: Metadata = {
   title,
   description,
-  openGraph: { title, description, type: "website", siteName: "Baithak", locale: "en_IN" },
+  openGraph: { title, description, type: "website", siteName: "Room Service" },
   twitter: { card: "summary_large_image", title, description },
 };
 
@@ -22,7 +22,7 @@ export default function RootLayout({
       <body>
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-[100] mix-blend-overlay opacity-[0.04] bg-[url('/noise.svg')]"
+          className="pointer-events-none fixed inset-0 z-[100] mix-blend-overlay opacity-[0.05] bg-[url('/noise.svg')]"
         />
         {children}
       </body>

@@ -19,7 +19,7 @@ export const ROOMS: Room[] = [
   {
     id: "late-night-drive",
     name: "Late Night Drive",
-    tagline: "Highway khaali, bass full.",
+    tagline: "Empty roads, full bass.",
     spotify: { kind: "playlist", id: "0X4K4T2IqcV3MAZ7HhB8Qy", title: "R&B Late night drive" },
     tracks: [
       { yt: "O1OTWCd40bc", title: "The Weeknd - Wicked Games (Official Video - Explicit)", artist: "TheWeekndVEVO" },
@@ -36,7 +36,7 @@ export const ROOMS: Room[] = [
   {
     id: "rainy-balcony",
     name: "Rainy Balcony",
-    tagline: "Chai ek haath, chords doosre.",
+    tagline: "Tea in one hand, chords in the other.",
     spotify: { kind: "playlist", id: "37i9dQZF1DX2UgsUIg75Vg", title: "Chilled R&B" },
     tracks: [
       { yt: "hKgl5-lkT8U", title: "Daniel Caesar & H.E.R. - Best Part, a Visual", artist: "DanielCaesarVEVO" },
@@ -51,7 +51,7 @@ export const ROOMS: Room[] = [
   {
     id: "sunday-slow",
     name: "Sunday Slow",
-    tagline: "Aaj kuch nahi karna. Bas ye.",
+    tagline: "Nothing planned. Keep it that way.",
     spotify: { kind: "playlist", id: "4433kuoUdsfF43lgePAMtR", title: "Greatest R&B Slow Jams" },
     tracks: [
       { yt: "_WcWHZc8s2I", title: "Sade - No Ordinary Love - Official - 1992", artist: "SadeVEVO" },
@@ -66,7 +66,7 @@ export const ROOMS: Room[] = [
   {
     id: "3am-studio",
     name: "3AM Studio",
-    tagline: "Deadline gaya bhaad mein.",
+    tagline: "The deadline can wait.",
     spotify: { kind: "playlist", id: "4SUeq4oqa2FBC5XR50FXsS", title: "Moody R&B" },
     tracks: [
       { yt: "N7LBse25QP8", title: "dvsn - Too Deep (Official Audio)", artist: "dvsn" },
