@@ -26,6 +26,36 @@ test("cleanTitle strips YouTube dressing, keeps the song", () => {
   assert.equal(cleanTitle("Frank Ocean - Pink + White"), "Frank Ocean - Pink + White");
   // a bracket that is part of the title survives
   assert.equal(cleanTitle("dvsn - Too Deep (feat. Ty Dolla)"), "dvsn - Too Deep (feat. Ty Dolla)");
+  assert.equal(
+    cleanTitle("Maxwell - Ascension (Don't Ever Wonder) (Official 4K Video)"),
+    "Maxwell - Ascension (Don't Ever Wonder)",
+  );
+});
+
+test("cleanTitle peels the lofi mix tail", () => {
+  assert.equal(
+    cleanTitle("Rainy Days In Tokyo [Lofi Hip Hop / Jazzhop / Chillhop Mix] - Beats to chill/study/relax"),
+    "Rainy Days In Tokyo",
+  );
+  assert.equal(cleanTitle("Rainy day • lofi ambient music | chill beats to relax/study to"), "Rainy day");
+  assert.equal(cleanTitle("Sunny (no copyright) - lo-fi hip-hop/jazzhop beat"), "Sunny");
+  assert.equal(cleanTitle("1 A.M Study Session 📚 [lofi hip hop]"), "1 A.M Study Session 📚");
+  assert.equal(cleanTitle("midnight studying. [lofi / jazzhop / chill mix]"), "midnight studying.");
+  assert.equal(
+    cleanTitle("Whispers in the Fog - Relaxing Ambient Lofi Chillhop | Free Background Music"),
+    "Whispers in the Fog",
+  );
+  assert.equal(cleanTitle("Sunny  Morning  [lo-fi hip hop mix]"), "Sunny Morning");
+});
+
+test("cleanTitle does not eat one-word song titles", () => {
+  // "Free" and "Focus" are songs; the tail list must stay narrower than the
+  // bracket list or these lose everything after the dash.
+  assert.equal(cleanTitle("6LACK - Free [Lyric Video]"), "6LACK - Free");
+  assert.equal(cleanTitle("H.E.R. - Focus (Official Video)"), "H.E.R. - Focus");
+  // an unspaced hyphen is part of a word, not a separator
+  assert.equal(cleanTitle('[FREE] Lo-Fi x Piano Type Beat "Midnight"'), 'Lo-Fi x Piano Type Beat "Midnight"');
+  assert.equal(cleanTitle("Rain"), "Rain");
 });
 
 test("cleanArtist drops channel suffixes", () => {

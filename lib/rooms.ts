@@ -3,6 +3,9 @@ export type Track = {
   yt: string;
   /** oEmbed `title`, verbatim. The UI strips the "(Official Video)" part. */
   title: string;
+  /** Display override, for the handful of titles no rule can rescue without
+   *  also eating real ones. `title` stays verbatim so the source is traceable. */
+  label?: string;
   /** oEmbed `author_name`, verbatim. The UI strips the "VEVO" part. */
   artist: string;
 };

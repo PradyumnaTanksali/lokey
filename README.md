@@ -46,7 +46,14 @@ curl -s "https://www.youtube.com/watch?v=VIDEO_ID" | grep -o '"isLiveContent":[a
 ```
 
 `title` and `author_name` from the oEmbed response are what belong in the file —
-the UI strips `(Official Video)` and `VEVO` at render time.
+the UI strips `(Official Video)`, `VEVO`, and the usual lofi-mix tail at render
+time. When a title is beyond saving (`𝐖𝐚𝐤𝐞 𝐔𝐩 🌌 Dreamy Lofi Beats || A Stress
+Reflief Playlist`), add a `label` and leave `title` verbatim so the source stays
+traceable. Preview what any change renders as:
+
+```bash
+node --test lib/*.test.ts    # the title rules have regression cases
+```
 
 If a track dies in the wild, the player catches YouTube's error, says so, and
 moves on.

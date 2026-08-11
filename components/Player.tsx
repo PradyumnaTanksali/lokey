@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Room } from "@/lib/rooms";
-import { cleanArtist, cleanTitle, fmt, step } from "@/lib/player";
+import { cleanArtist, displayTitle, fmt, step } from "@/lib/player";
 import { useYouTube } from "@/lib/useYouTube";
 
 const label = "font-mono text-[10px] uppercase tracking-[0.2em]";
+
+const ART_SIZES = ["maxresdefault", "hq720", "hqdefault"] as const;
 
 type Props = {
   rooms: Room[];
@@ -79,10 +81,11 @@ export function Player({ rooms, name, tagline, sibling, weather = false }: Props
     return () => window.removeEventListener("keydown", onKey);
   }, [toggle, skip]);
 
-  // hqdefault is 4:3 with letterbox bars baked in, so a square crop keeps the
-  // bars. maxres is a clean 16:9; hq720 is the fallback when it isn't there.
-  const art = `https://i.ytimg.com/vi/${track.yt}/maxresdefault.jpg`;
-  const artFallback = `https://i.ytimg.com/vi/${track.yt}/hq720.jpg`;
+  // Prefer the clean 16:9 thumbs — hqdefault is 4:3 with letterbox bars baked
+  // in, so a square crop keeps the bars. Older uploads (Sade '92, some mixes)
+  // have neither maxres nor hq720, so it stays as the last resort.
+  const artSrc = (stepIndex: number) =>
+    `https://i.ytimg.com/vi/${track.yt}/${ART_SIZES[stepIndex]}.jpg`;
 
   return (
     <>
@@ -144,11 +147,16 @@ export function Player({ rooms, name, tagline, sibling, weather = false }: Props
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             key={track.yt}
-            src={art}
+            src={artSrc(0)}
             onError={(e) => {
-              if (e.currentTarget.src !== artFallback) e.currentTarget.src = artFallback;
+              const img = e.currentTarget;
+              const next = Number(img.dataset.step ?? 0) + 1;
+              if (next < ART_SIZES.length) {
+                img.dataset.step = String(next);
+                img.src = artSrc(next);
+              }
             }}
-            alt={`Cover art for ${cleanTitle(track.title)}`}
+            alt={`Cover art for ${displayTitle(track)}`}
             width={1280}
             height={720}
             className="art-in mt-1 aspect-square w-full rounded-xl object-cover shadow-[0_20px_60px_rgba(0,0,0,0.55)]"
@@ -156,7 +164,7 @@ export function Player({ rooms, name, tagline, sibling, weather = false }: Props
 
           <p className={`${label} mt-5 text-ink-faint`}>{room.tagline}</p>
           <h1 className="mt-2 text-xl font-medium leading-snug tracking-[-0.02em] text-balance">
-            {cleanTitle(track.title)}
+            {displayTitle(track)}
           </h1>
           <p className="mt-1 text-sm text-ink-muted">{cleanArtist(track.artist)}</p>
 
@@ -261,7 +269,7 @@ export function Player({ rooms, name, tagline, sibling, weather = false }: Props
                         i === trackIndex ? "text-ink" : "text-ink-muted group-hover:text-ink"
                       }`}
                     >
-                      {cleanTitle(t.title)}
+                      {displayTitle(t)}
                     </span>
                   </button>
                 </li>
