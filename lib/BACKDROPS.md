@@ -5,35 +5,38 @@ vendored** — the bytes come off their CDN, not our bandwidth. Each url was
 verified returning `200 video/mp4` with a `Referer` header set, so hotlinking is
 not blocked.
 
-## Lokey — a pool of 16
+## Lokey — a pool of 18
 
 `backdropFor()` walks this pool one step per track, so the room changes with the
-record. The order is the rotation: no two neighbours are the same kind of shot,
-which is why they are not sorted by theme.
+record. **The order is the rotation**: city, then landscape, then something
+abstract, then somewhere warm, so no two consecutive tracks put you in the same
+kind of place. That is why it is not sorted by theme. Entries 1, 2, 4 and 6 are
+the originals the rest of the pool was matched to.
 
-| # | Clip | Source page | Size |
-|---|---|---|---|
-| 1 | defocused bokeh, near-black | https://pixabay.com/videos/bokeh-blur-lights-night-city-6400/ | 2.1 MB |
-| 2 | rain on glass, high-rise behind | https://pixabay.com/videos/rain-city-highrise-building-lights-310990/ | 3.4 MB |
-| 3 | quiet Japanese alley, streetlights | https://pixabay.com/videos/japan-street-night-urban-352850/ | 3.0 MB |
-| 4 | blue smoke on black | https://pixabay.com/videos/smoke-blue-smoke-blue-9551/ | 3.8 MB |
-| 5 | wet asphalt, light reflections | https://pixabay.com/videos/rainy-day-rain-night-summer-5276/ | 4.2 MB |
-| 6 | NYC facade, lit windows | https://pixabay.com/videos/city-new-york-building-night-6782/ | 1.9 MB |
-| 7 | rain rippling a neon puddle | https://pixabay.com/videos/rain-raindrops-puddle-street-night-352823/ | 4.6 MB |
-| 8 | blue haze ascending | https://pixabay.com/videos/smoke-ascending-haze-blue-step-out-3068/ | 1.4 MB |
-| 9 | noir blue street, mist | https://pixabay.com/videos/night-urban-cinematic-blue-street-316176/ | 4.1 MB |
-| 10 | headlight trails from above | https://pixabay.com/videos/seoul-traffic-cars-city-speed-21118/ | 3.4 MB |
-| 11 | dark room, rain on the window | https://pixabay.com/videos/dark-room-rain-loop-environment-324730/ | 3.7 MB |
-| 12 | slow steam against dark | https://pixabay.com/videos/steam-smoke-fumes-gas-heat-dark-326/ | 1.3 MB |
-| 13 | wet neon street | https://pixabay.com/videos/night-city-rain-street-neon-352834/ | 4.7 MB |
-| 14 | traffic lights, dark asphalt | https://pixabay.com/videos/traffic-lights-city-street-night-6455/ | 3.4 MB |
-| 15 | wet road, colour in the puddles | https://pixabay.com/videos/rainy-rain-night-summer-colorful-305668/ | 1.5 MB |
-| 16 | night skyline, slow drift | https://pixabay.com/videos/city-urban-night-buildings-251066/ | 4.2 MB |
+| # | Clip | Source page | Size | Length |
+|---|---|---|---|---|
+| 1 | defocused bokeh, near-black | https://pixabay.com/videos/bokeh-blur-lights-night-city-6400/ | 2.1 MB | — |
+| 2 | rain on glass, high-rise behind | https://pixabay.com/videos/rain-city-highrise-building-lights-310990/ | 3.4 MB | 30s |
+| 3 | snow over the Vosges, France | https://pixabay.com/videos/vosges-france-snow-nature-25477/ | 7.1 MB | 19s |
+| 4 | quiet Japanese alley, streetlights | https://pixabay.com/videos/japan-street-night-urban-352850/ | 3.0 MB | — |
+| 5 | rainforest under rain and fog | https://pixabay.com/videos/trees-forest-fog-rain-rainy-day-212102/ | 5.5 MB | 40s |
+| 6 | blue smoke on black | https://pixabay.com/videos/smoke-blue-smoke-blue-9551/ | 3.8 MB | — |
+| 7 | Manhattan, Empire State | https://pixabay.com/videos/empire-state-building-new-york-usa-1575/ | 5.6 MB | 22s |
+| 8 | snowflakes falling on dark | https://pixabay.com/videos/snowflakes-snow-winter-xmas-6310/ | 2.0 MB | 33s |
+| 9 | a boat on a foggy sea | https://pixabay.com/videos/boat-fog-ocean-sea-horizon-water-3589/ | 4.6 MB | 61s |
+| 10 | Hong Kong harbour at nightfall | https://pixabay.com/videos/city-nightfall-hong-kong-sunset-3249/ | 8.4 MB | 29s |
+| 11 | rain and fog through forest | https://pixabay.com/videos/forest-rain-fog-trees-nature-31450/ | 8.5 MB | 40s |
+| 12 | dark room, rain on the window | https://pixabay.com/videos/dark-room-rain-loop-environment-324730/ | 3.7 MB | 30s |
+| 13 | snow-covered pines from above | https://pixabay.com/videos/snowy-trees-above-winter-landscape-7328/ | 5.7 MB | 28s |
+| 14 | rain outside, fireplace burning | https://pixabay.com/videos/ai-generated-rain-fireplace-autumn-234440/ | 7.5 MB | 60s |
+| 15 | night cityscape over near-black | https://pixabay.com/videos/city-night-lights-urban-cityscape-3134/ | 5.7 MB | 54s |
+| 16 | winter in Bavaria | https://pixabay.com/videos/upper-palatinate-bavaria-landscape-31556/ | 5.5 MB | 17s |
+| 17 | alpine fog over the Seiser Alm | https://pixabay.com/videos/learn-seiser-alm-sun-exposure-fog-15138/ | 4.5 MB | 21s |
+| 18 | forest path in rain and fog | https://pixabay.com/videos/trees-forest-woods-rain-path-fog-240624/ | 2.2 MB | 17s |
 
-Two verified clips were cut from this pool for being 960×540 at over 4.8 MB —
-a bad trade for a full-screen bed. Clips with readable shop signage were also
-cut: the licence restricts commercial use of footage carrying recognisable
-brands, and a wall of legible signs fights the wordmark anyway.
+Cut on content grounds despite passing every technical check: clips carrying
+readable shop signage. The licence restricts commercial use of footage with
+recognisable brands, and a wall of legible signs fights the wordmark anyway.
 
 ## Forecast — a pool per weather
 
@@ -112,9 +115,14 @@ Keep only `200` + `video/mp4`, and check `content-length` before trusting
 anything — some Pixabay files run past 200 MB. Three gotchas found the hard way:
 
 - A large share of CDN objects serve `binary/octet-stream` instead of
-  `video/mp4`. **Almost everything uploaded 2021–2023 does.** 2015–2019 and
-  2024+ are generally fine.
+  `video/mp4`. **Everything uploaded 2020 through 2024 inclusive does** — that
+  window is a dead zone, don't spend time in it. 2015–2019 and 2025+ are fine.
+  One file (`304-135918292`) serves `video/quicktime`, so check the type rather
+  than assuming mp4 from the extension.
 - `_large` is not always 1080p. On a 4K source the whole ladder shifts up, so a
   `_small` can be full HD and a `_medium` can be 1440p.
-- Check orientation, not just resolution — plenty of good-looking results are
-  portrait and will letterbox badly as a full-screen bed.
+- Check orientation *and* aspect, not just resolution. Portrait results are
+  common, and even among landscape clips the encoded ratio is often not 16:9 —
+  see the aspect note above.
+- 2025–2026 uploads serve the right type but are frequently enormous: a 59s 4K
+  storm is 43 MB even at `_small`.

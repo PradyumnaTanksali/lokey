@@ -36,7 +36,7 @@ export function Stage() {
       <Backdrop
         id="room"
         sources={backdropFor(BACKDROPS.room, index)}
-        scrim="from-black/60 via-black/25 to-black/85"
+        scrim="from-black/60 via-black/42 to-black/88"
       />
 
       {/* Audio only — the room is the interface. */}

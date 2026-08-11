@@ -21,26 +21,29 @@
  *  two stacked <video>s and a timeupdate listener — worth revisiting for
  *  Forecast, where people actually watch, not for the room behind a wordmark. */
 export const BACKDROPS: Record<string, string[]> = {
-  // Lokey walks this pool one step per track, so the order is the
-  // rotation: no two neighbours are the same kind of shot. Bokeh → rain glass →
-  // alley → smoke → asphalt → facade, and around again.
+  // Lokey walks this pool one step per track, so the order IS the rotation:
+  // city, then landscape, then something abstract, then somewhere warm, so no
+  // two consecutive tracks land you in the same kind of place. The first four
+  // are the originals the brief was built around.
   room: [
     "https://cdn.pixabay.com/video/2016/11/15/6400-191716659_medium.mp4", // defocused bokeh, near-black
-    "https://cdn.pixabay.com/video/2025/10/20/310990_medium.mp4", // rain on glass, high-rise behind
+    "https://cdn.pixabay.com/video/2025/10/20/310990_medium.mp4", // rain on glass, high-rise behind · 30s
+    "https://cdn.pixabay.com/video/2019/07/24/25477-350507890_small.mp4", // snow over the Vosges, France · 19s
     "https://cdn.pixabay.com/video/2026/05/15/352850_medium.mp4", // quiet Japanese alley, streetlights
+    "https://cdn.pixabay.com/video/2024/05/15/212102_tiny.mp4", // rainforest under rain and fog · 40s
     "https://cdn.pixabay.com/video/2017/06/04/9551-220312329_medium.mp4", // blue smoke on black
-    "https://cdn.pixabay.com/video/2016/09/14/5276-182817505_medium.mp4", // wet asphalt, light reflections
-    "https://cdn.pixabay.com/video/2016/12/14/6782-195763553_medium.mp4", // NYC facade, lit windows
-    "https://cdn.pixabay.com/video/2026/05/15/352823_medium.mp4", // rain rippling a neon puddle
-    "https://cdn.pixabay.com/video/2016/05/08/3068-165796695_medium.mp4", // blue haze ascending
-    "https://cdn.pixabay.com/video/2025/11/15/316176_medium.mp4", // noir blue street, mist
-    "https://cdn.pixabay.com/video/2019/02/01/21118-315137091_medium.mp4", // headlight trails from above
-    "https://cdn.pixabay.com/video/2025/12/29/324730_small.mp4", // dark room, rain on the window
-    "https://cdn.pixabay.com/video/2015/08/11/326-135993239_medium.mp4", // slow steam against dark
-    "https://cdn.pixabay.com/video/2026/05/15/352834_medium.mp4", // wet neon street, cyberpunk grade
-    "https://cdn.pixabay.com/video/2016/11/17/6455-192501937_medium.mp4", // traffic lights, dark asphalt
-    "https://cdn.pixabay.com/video/2025/09/22/305668_medium.mp4", // wet road, colour in the puddles
-    "https://cdn.pixabay.com/video/2025/01/06/251066_small.mp4", // night skyline, slow drift
+    "https://cdn.pixabay.com/video/2015/12/04/1575-148613496_small.mp4", // Manhattan, Empire State · 22s
+    "https://cdn.pixabay.com/video/2016/11/09/6310-190925747_large.mp4", // snowflakes falling on dark · 33s
+    "https://cdn.pixabay.com/video/2016/06/27/3589-172488261_tiny.mp4", // a boat on a foggy sea · 61s
+    "https://cdn.pixabay.com/video/2016/05/21/3249-167599912_medium.mp4", // Hong Kong harbour at nightfall · 29s
+    "https://cdn.pixabay.com/video/2020/01/21/31450-386957656_small.mp4", // rain and fog through forest · 40s
+    "https://cdn.pixabay.com/video/2025/12/29/324730_small.mp4", // dark room, rain on the window · 30s
+    "https://cdn.pixabay.com/video/2017/01/13/7328-199383367_small.mp4", // snow-covered pines from above · 28s
+    "https://cdn.pixabay.com/video/2024/10/03/234440_medium.mp4", // rain outside, fireplace burning · 60s
+    "https://cdn.pixabay.com/video/2016/05/12/3134-166335905_small.mp4", // night cityscape over near-black · 54s
+    "https://cdn.pixabay.com/video/2020/01/25/31556-387675159_small.mp4", // winter in Bavaria · 17s
+    "https://cdn.pixabay.com/video/2018/03/21/15138-261402905_tiny.mp4", // alpine fog over the Seiser Alm · 21s
+    "https://cdn.pixabay.com/video/2024/11/10/240624_medium.mp4", // forest path in rain and fog · 17s
   ],
   // Forecast is a page you sit and watch, so these are scenes with duration —
   // nothing under 15s, most 20-60s. Each pool rotates per track like the room
