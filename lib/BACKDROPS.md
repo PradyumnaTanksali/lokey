@@ -35,44 +35,48 @@ a bad trade for a full-screen bed. Clips with readable shop signage were also
 cut: the licence restricts commercial use of footage carrying recognisable
 brands, and a wall of legible signs fights the wordmark anyway.
 
-## Forecast — one per weather, plus a fallback
+## Forecast — a pool per weather
 
-Drawn rather than filmed: on this page the video is the thing you came to watch,
-so it needs to be a scene, not a texture.
+Forecast is a page you sit and watch, so these are scenes with duration rather
+than short loops: nothing under 15s, most between 20 and 60. Each pool rotates
+per track, the same way the room pool does.
 
-| Slot | Clip | Style | Source page | Size |
+| Slot | Clip | Source page | Rendition | Length |
 |---|---|---|---|---|
-| `downpour` | pixel landscape, watchtower, rain | **8-bit** | https://pixabay.com/videos/pixel-8-bit-artwork-lofi-nature-337111/ | 0.76 MB |
-| `downpour` (fallback) | cabin in the rain, warm window | illustrated | https://pixabay.com/videos/live-wallpaper-cozy-cabin-rainy-day-270983/ | 0.89 MB |
-| `golden-hour` | rooftop silhouette over a sunset skyline | illustrated | https://pixabay.com/videos/anime-cityscape-silhouette-sunset-266892/ | 5.35 MB |
-| `golden-hour` (fallback) | writing at sunset | illustrated | https://pixabay.com/videos/man-anime-sunset-writing-lo-fi-330218/ | 1.42 MB |
-| `fog` | roadside motel in drifting fog | illustrated | https://pixabay.com/videos/motel-night-fog-mist-loop-219912/ | 1.05 MB |
-| `fog` (fallback) | moonlit birch forest in fog | photoreal | https://pixabay.com/videos/ai-generated-kupala-night-forest-351133/ | 1.21 MB |
-| `small-hours` | gas station under a starry sky | illustrated | https://pixabay.com/videos/gas-station-cartoon-night-stars-219916/ | 1.40 MB |
-| `small-hours` (fallback) | night room, rainy city outside | illustrated | https://pixabay.com/videos/lofi-nature-anime-to-relax-night-319697/ | 1.72 MB |
+| `downpour` | rain streaming down glass | https://pixabay.com/videos/rain-water-window-wet-drops-11722/ | 7.9 MB | 33s |
+| `downpour` | storm over open ocean | https://pixabay.com/videos/storm-ocean-sky-rain-the-waves-16160/ | 7.8 MB | 40s |
+| `downpour` | rain and lightning in cloud | https://pixabay.com/videos/rain-thunderstorm-lightning-clouds-305/ | 4.8 MB | 15s |
+| `downpour` | raindrops running on a pane | https://pixabay.com/videos/rain-raindrop-wet-water-window-28236/ | 3.7 MB | 15s |
+| `golden-hour` | harbour and ocean at sunset | https://pixabay.com/videos/harbor-sunset-landscape-ocean-6119/ | 8.1 MB | 25s |
+| `golden-hour` | lighthouse against sunset | https://pixabay.com/videos/lighthouse-sunset-sunrise-1973/ | 6.3 MB | 21s |
+| `golden-hour` | alpine sunrise over a sea of fog | https://pixabay.com/videos/sunrise-tödi-alps-mountains-7127/ | 9.1 MB | 23s |
+| `golden-hour` | lighthouse, dramatic sky | https://pixabay.com/videos/lighthouse-sunset-clouds-1917/ | 6.5 MB | 22s |
+| `fog` | fog rolling over wooded hills | https://pixabay.com/videos/wave-of-fog-fog-mist-flow-flow-7102/ | 5.5 MB | 25s |
+| `fog` | desert mountains under cloud | https://pixabay.com/videos/mountains-clouds-fog-mist-desert-2266/ | 5.9 MB | 21s |
+| `fog` | Colombian mountains, dense fog | https://pixabay.com/videos/clouds-moutains-fog-colombia-16011/ | 3.7 MB | 18s |
+| `small-hours` | aurora over a starry sky | https://pixabay.com/videos/aurora-borealis-sky-aurora-star-7348/ | 6.5 MB | 60s |
+| `small-hours` | stars over South Tyrol peaks | https://pixabay.com/videos/starry-sky-seis-am-schlern-14955/ | 4.0 MB | 17s |
+| `small-hours` | full moon behind drifting cloud | https://pixabay.com/videos/full-moon-clouds-sky-night-moon-23269/ | 6.0 MB | 50s |
+| `small-hours` | slow drift through a starfield | https://pixabay.com/videos/space-stars-universe-galaxies-2381/ | 5.2 MB | 25s |
 
-`fog` and `small-hours` are the same illustrator and the same batch, so moving
-between those two rooms reads as one world.
+### Why these run bigger than the room pool
 
-### Why only one of these is real 8-bit
+A 6 MB cap sounds prudent but protects nobody here — the files are hotlinked, so
+the bytes are Pixabay's, not ours. What the cap actually did was force every
+pick into the low-bitrate 2015–2019 archive at 640×360 and below. Raising it to
+roughly 9 MB bought real resolution on almost every slot. On this page the
+footage *is* the content, so that is the right trade; the room pool stays
+smaller because it sits behind a wordmark under a heavy scrim.
 
-Pixabay's pixel-art **video** library is roughly a dozen clips, and almost none
-of them survive contact with the requirements. `pixelart` returns zero results;
-`pixel art`, `8 bit`, `16 bit` and `retro game background` return overwhelmingly
-live-action nature footage and abstract motion graphics. Of what genuinely is
-pixel art:
+### Aspect ratio is the trap, not resolution
 
-- The best of it is **vertical phone wallpaper** — the whole "AI Generated
-  Wallpaper Pixel Anime" series, plus a pixel-art campfire scene, all portrait.
-- Most of the rest was **uploaded 2021–2023**, and everything from that window
-  serves `binary/octet-stream` rather than `video/mp4`. That killed a pixel
-  island sunset, a pixel room with a storm outside, and a pixel rooftop scene.
-- A genuine pixel lofi-study-room scene (`248092`) matches the brief exactly and
-  is **33.9 MB** at medium, 24.3 MB at small.
-
-So `downpour` is real 8-bit and the other three are illustrated/anime lofi in
-the same register. The substitution is deliberate and worth revisiting if the
-look matters more than the source: commissioned pixel loops, or another library.
+Old Pixabay footage is not reliably 16:9, and `object-fit: cover` does not
+letterbox — it zooms. A 3:1 or 2.18:1 source on a 16:9 viewport gets cropped to
+its middle third and turns to mush. Several otherwise-good clips were cut on
+this alone: a 3:1 aurora, a 2.18:1 night sky, a 2.18:1 Monument Valley (73s, the
+longest clip found anywhere), and a 4:3 waterfall. **Measure the encoded
+dimensions, don't read them off the page** — one clip advertises 1280×720 and
+is actually encoded 640×310.
 
 ## Licence
 

@@ -5,11 +5,14 @@
  *  load-bearing — `Backdrop` paints a gradient base underneath, and an empty
  *  array, a 403, or `prefers-reduced-motion` all just mean no video.
  *
- *  The second url in each slot is a *different clip*, not another rendition of
- *  the same one — a fallback is worth more when it can survive the first clip
- *  being taken down. Mostly `_medium`; a few are `_small` because the source was
- *  4K and the medium rung blew the size budget while the small one is still
- *  1080p. Never assume `_large` means 1080p.
+ *  Every key is a *pool*, walked one step per track by `backdropFor`, which also
+ *  hands the next clip in as that clip's fallback — so a takedown degrades to a
+ *  different scene rather than to no scene.
+ *
+ *  Renditions are picked per clip, not by rule. `_large` is not reliably 1080p:
+ *  on a 4K source the whole ladder shifts up, so some `_small` and `_tiny` files
+ *  here are the 720p or 1080p rung. Always check the actual size and dimensions
+ *  rather than trusting the suffix.
  *
  *  Every url verified 200 `video/mp4` with a Referer set. Provenance, sizes and
  *  licence terms are in BACKDROPS.md next to this file.
@@ -39,40 +42,41 @@ export const BACKDROPS: Record<string, string[]> = {
     "https://cdn.pixabay.com/video/2025/09/22/305668_medium.mp4", // wet road, colour in the puddles
     "https://cdn.pixabay.com/video/2025/01/06/251066_small.mp4", // night skyline, slow drift
   ],
-  // Forecast is drawn, not filmed — you sit and watch these, so they are scenes
-  // rather than texture. See BACKDROPS.md for why only one of them is genuine pixel
-  // art: Pixabay's pixel-art *video* library is about a dozen clips, mostly
-  // vertical phone wallpapers or pre-2024 uploads that fail the type check.
+  // Forecast is a page you sit and watch, so these are scenes with duration —
+  // nothing under 15s, most 20-60s. Each pool rotates per track like the room
+  // pool does. Renditions run bigger here than in `room` because at this size
+  // the footage is the content, not texture behind a wordmark.
 
-  // genuine 8-bit: pixel landscape, watchtower, falling rain
   downpour: [
-    "https://cdn.pixabay.com/video/2026/02/28/337111_medium.mp4",
-    "https://cdn.pixabay.com/video/2025/04/09/270983_medium.mp4", // cabin in the rain, warm window
+    "https://cdn.pixabay.com/video/2017/08/30/11722-231759069_medium.mp4", // rain streaming down glass · 33s
+    "https://cdn.pixabay.com/video/2018/05/11/16160-269534741_small.mp4", // storm over open ocean · 40s
+    "https://cdn.pixabay.com/video/2015/08/11/305-135918495_medium.mp4", // rain and lightning in cloud · 15s
+    "https://cdn.pixabay.com/video/2019/10/24/28236-368501609_medium.mp4", // raindrops running on a pane · 15s
   ],
-  // rooftop silhouette over a sunset skyline — the brightest slot, hence the
-  // heavier scrim below
   "golden-hour": [
-    "https://cdn.pixabay.com/video/2025/03/23/266892_small.mp4",
-    "https://cdn.pixabay.com/video/2026/01/25/330218_medium.mp4", // writing at sunset
+    "https://cdn.pixabay.com/video/2016/10/26/6119-189135193_medium.mp4", // harbour and ocean at sunset · 25s
+    "https://cdn.pixabay.com/video/2016/01/25/1973-152947495_medium.mp4", // lighthouse against sunset · 21s
+    "https://cdn.pixabay.com/video/2017/01/07/7127-336300875_small.mp4", // alpine sunrise over a sea of fog · 23s
+    "https://cdn.pixabay.com/video/2016/01/14/1917-152081339_small.mp4", // lighthouse, dramatic sky · 22s
   ],
-  // roadside motel wrapped in drifting fog. Its fallback is photoreal rather
-  // than drawn — the only illustrated fog loop on Pixabay is the primary, and a
-  // fallback that only appears if the primary dies is worth more than none.
   fog: [
-    "https://cdn.pixabay.com/video/2024/07/07/219912_medium.mp4",
-    "https://cdn.pixabay.com/video/2026/05/07/351133_medium.mp4", // foggy birch forest, moonlit
+    "https://cdn.pixabay.com/video/2017/01/07/7102-198553608_medium.mp4", // fog rolling over wooded hills · 25s
+    "https://cdn.pixabay.com/video/2016/02/29/2266-157183287_medium.mp4", // desert mountains under cloud · 21s
+    "https://cdn.pixabay.com/video/2018/05/05/16011-268207201_tiny.mp4", // Colombian mountains, dense fog · 18s
   ],
-  // gas station under a starry sky — same illustrator and batch as the motel
-  // above, so switching between those two rooms reads as one world
   "small-hours": [
-    "https://cdn.pixabay.com/video/2024/07/07/219916_medium.mp4",
-    "https://cdn.pixabay.com/video/2025/12/03/319697_medium.mp4", // night room, rainy city outside
+    "https://cdn.pixabay.com/video/2017/01/14/7348-199627499_small.mp4", // aurora over a starry sky · 60s
+    "https://cdn.pixabay.com/video/2018/03/12/14955-260176883_tiny.mp4", // stars over South Tyrol peaks · 17s
+    "https://cdn.pixabay.com/video/2019/05/03/23269-334228236_small.mp4", // full moon behind drifting cloud · 50s
+    "https://cdn.pixabay.com/video/2016/03/05/2381-157901992_small.mp4", // slow drift through a starfield · 25s
   ],
 };
 
 /** Brighter footage needs more floor under the type. */
 export const SCRIMS: Record<string, string> = {
   "golden-hour": "from-black/65 via-black/50 to-black/85",
+  // grey-white fog is the brightest thing on the site
+  fog: "from-black/60 via-black/45 to-black/85",
 };
 
 /** The clip for a given position in the queue, plus the next one as its
