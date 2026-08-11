@@ -13,6 +13,7 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-display);
 
   --color-floor:     var(--floor);
   --color-ink:       var(--ink);
@@ -20,37 +21,6 @@
   --color-ink-faint: var(--ink-faint);
   --color-line:      var(--line);
   --color-line-soft: var(--line-soft);
-}
-
-/* ─── Glass ───────────────────────────────────────────────────────────────────
-   One recipe for every raised surface: a top-lit gradient so the panel has a
-   light source, a bright inner hairline for the bevel, and saturation on the
-   backdrop so colour from the video bleeds through instead of going grey.     */
-.glass {
-  position: relative;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.07) 45%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.34),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
-    0 22px 60px rgba(0, 0, 0, 0.55);
-}
-
-/* Specular highlight across the top-left, the way a real pane catches a room. */
-.glass::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(120% 65% at 22% -15%, rgba(255, 255, 255, 0.24), transparent 62%);
 }
 
 /* ─── Backdrop ────────────────────────────────────────────────────────────────

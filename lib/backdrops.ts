@@ -17,10 +17,26 @@
  *  visible seam at the loop point. Crossfading needs two stacked <video>s and a
  *  timeupdate listener — not worth it for a backdrop nobody stares at. */
 export const BACKDROPS: Record<string, string[]> = {
-  // defocused city bokeh on near-black — the darkest field, best for light type
+  // Room Service walks this pool one step per track, so the order is the
+  // rotation: no two neighbours are the same kind of shot. Bokeh → rain glass →
+  // alley → smoke → asphalt → facade, and around again.
   room: [
-    "https://cdn.pixabay.com/video/2016/11/15/6400-191716659_medium.mp4",
-    "https://cdn.pixabay.com/video/2025/12/03/319698_medium.mp4",
+    "https://cdn.pixabay.com/video/2016/11/15/6400-191716659_medium.mp4", // defocused bokeh, near-black
+    "https://cdn.pixabay.com/video/2025/10/20/310990_medium.mp4", // rain on glass, high-rise behind
+    "https://cdn.pixabay.com/video/2026/05/15/352850_medium.mp4", // quiet Japanese alley, streetlights
+    "https://cdn.pixabay.com/video/2017/06/04/9551-220312329_medium.mp4", // blue smoke on black
+    "https://cdn.pixabay.com/video/2016/09/14/5276-182817505_medium.mp4", // wet asphalt, light reflections
+    "https://cdn.pixabay.com/video/2016/12/14/6782-195763553_medium.mp4", // NYC facade, lit windows
+    "https://cdn.pixabay.com/video/2026/05/15/352823_medium.mp4", // rain rippling a neon puddle
+    "https://cdn.pixabay.com/video/2016/05/08/3068-165796695_medium.mp4", // blue haze ascending
+    "https://cdn.pixabay.com/video/2025/11/15/316176_medium.mp4", // noir blue street, mist
+    "https://cdn.pixabay.com/video/2019/02/01/21118-315137091_medium.mp4", // headlight trails from above
+    "https://cdn.pixabay.com/video/2025/12/29/324730_small.mp4", // dark room, rain on the window
+    "https://cdn.pixabay.com/video/2015/08/11/326-135993239_medium.mp4", // slow steam against dark
+    "https://cdn.pixabay.com/video/2026/05/15/352834_medium.mp4", // wet neon street, cyberpunk grade
+    "https://cdn.pixabay.com/video/2016/11/17/6455-192501937_medium.mp4", // traffic lights, dark asphalt
+    "https://cdn.pixabay.com/video/2025/09/22/305668_medium.mp4", // wet road, colour in the puddles
+    "https://cdn.pixabay.com/video/2025/01/06/251066_small.mp4", // night skyline, slow drift
   ],
   // rain plate on a dark ground, so it loops essentially perfectly
   downpour: [
@@ -48,3 +64,12 @@ export const BACKDROPS: Record<string, string[]> = {
 export const SCRIMS: Record<string, string> = {
   "golden-hour": "from-black/65 via-black/50 to-black/85",
 };
+
+/** The clip for a given position in the queue, plus the next one as its
+ *  fallback. Walking the pool by index rather than shuffling keeps it stable:
+ *  the same track always brings the same room back with it. */
+export function backdropFor(pool: string[], index: number): string[] {
+  if (pool.length === 0) return [];
+  if (pool.length === 1) return [pool[0]];
+  return [pool[index % pool.length], pool[(index + 1) % pool.length]];
+}

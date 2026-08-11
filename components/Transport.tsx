@@ -12,8 +12,10 @@ type SeekProps = {
   id: string;
 };
 
-/** Scrubber plus the two times. Long DJ sets and 3-minute singles both land in
- *  here, so the max comes from the player rather than anything hard-coded. */
+/** A hairline and two numbers. No track chrome, no panel: the scrubber is the
+ *  only horizontal line on the page, so it doesn't need decoration to be found.
+ *  A 3-minute single and a 4-hour set both land here, so the max comes from the
+ *  player rather than anything hard-coded. */
 export function Seek({ elapsed, duration, onSeek, id }: SeekProps) {
   return (
     <div className="w-full">
@@ -30,7 +32,7 @@ export function Seek({ elapsed, duration, onSeek, id }: SeekProps) {
         onChange={(e) => onSeek(Number(e.target.value))}
         className="w-full"
       />
-      <div className={`${label} mt-1.5 flex justify-between text-ink-faint`}>
+      <div className={`${label} mt-2 flex justify-between text-ink-faint tabular-nums`}>
         <span>{fmt(elapsed)}</span>
         <span>{duration ? fmt(duration) : "–:––"}</span>
       </div>
@@ -46,34 +48,24 @@ type ControlsProps = {
   onToggle: () => void;
 };
 
-/** Prev, play, next. Text rather than an icon set — nothing here needs a
- *  dependency to say "next". */
+/** Three words. No icon set, no filled circle — at this size a word is both
+ *  smaller and less ambiguous than a glyph. */
 export function Controls({ playing, ready, onPrev, onNext, onToggle }: ControlsProps) {
+  const item = `${label} py-2 transition-colors`;
   return (
-    <div className="flex items-center gap-2">
-      <button
-        type="button"
-        onClick={onPrev}
-        className={`${label} rounded-full px-3 py-2 text-ink-faint transition-colors hover:text-ink`}
-      >
+    <div className="flex items-center gap-6">
+      <button type="button" onClick={onPrev} className={`${item} text-ink-faint hover:text-ink`}>
         Prev
       </button>
       <button
         type="button"
         onClick={onToggle}
         disabled={!ready}
-        aria-label={playing ? "Pause" : "Play"}
-        className="grid size-12 place-items-center rounded-full bg-ink text-floor shadow-[0_6px_20px_rgba(0,0,0,0.45)] transition-opacity hover:opacity-85 disabled:opacity-40"
+        className={`${item} w-12 text-center text-ink hover:opacity-70 disabled:opacity-30`}
       >
-        <span aria-hidden="true" className="text-sm leading-none">
-          {playing ? "❚❚" : "▶"}
-        </span>
+        {playing ? "Pause" : "Play"}
       </button>
-      <button
-        type="button"
-        onClick={onNext}
-        className={`${label} rounded-full px-3 py-2 text-ink-faint transition-colors hover:text-ink`}
-      >
+      <button type="button" onClick={onNext} className={`${item} text-ink-faint hover:text-ink`}>
         Next
       </button>
     </div>
