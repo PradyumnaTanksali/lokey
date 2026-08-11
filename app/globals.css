@@ -1,17 +1,13 @@
 @import "tailwindcss";
 
-/* ─── Room Service tokens ─────────────────────────────────────────────────────
-   The cover art is the background, so everything here is glass over dark art.
-   Scene's warm-black is kept as the floor under the artwork.                  */
+/* ─── Tokens ──────────────────────────────────────────────────────────────── */
 :root {
-  --floor:      #14120F;
-  --ink:        #F6F3EE;
-  --ink-muted:  rgba(246, 243, 238, 0.66);
-  --ink-faint:  rgba(246, 243, 238, 0.44);
-  --line:       rgba(246, 243, 238, 0.14);
-  --line-soft:  rgba(246, 243, 238, 0.08);
-  /* Dark glass, not light. A white tint over bright artwork eats the type. */
-  --glass:      rgba(10, 9, 8, 0.34);
+  --floor:      #0C0A09;
+  --ink:        #F7F4EF;
+  --ink-muted:  rgba(247, 244, 239, 0.68);
+  --ink-faint:  rgba(247, 244, 239, 0.46);
+  --line:       rgba(247, 244, 239, 0.16);
+  --line-soft:  rgba(247, 244, 239, 0.08);
 }
 
 @theme inline {
@@ -24,22 +20,65 @@
   --color-ink-faint: var(--ink-faint);
   --color-line:      var(--line);
   --color-line-soft: var(--line-soft);
-  --color-glass:     var(--glass);
 }
 
-@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
-@keyframes riseIn  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-@keyframes spin    { to { transform: rotate(360deg); } }
-@keyframes rain    { to { background-position: 0 800px, 0 620px; } }
-@keyframes sweep   { 0% { transform: translateX(-140%) skewX(-16deg); opacity: 0; }
-                     40% { opacity: 0.45; }
-                     100% { transform: translateX(240%) skewX(-16deg); opacity: 0; } }
-@keyframes breathe { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.8; } }
+/* ─── Glass ───────────────────────────────────────────────────────────────────
+   One recipe for every raised surface: a top-lit gradient so the panel has a
+   light source, a bright inner hairline for the bevel, and saturation on the
+   backdrop so colour from the video bleeds through instead of going grey.     */
+.glass {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.07) 45%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+    0 22px 60px rgba(0, 0, 0, 0.55);
+}
 
-.rise { animation: riseIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.art-in { animation: fadeIn 1s ease-out both; }
+/* Specular highlight across the top-left, the way a real pane catches a room. */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(120% 65% at 22% -15%, rgba(255, 255, 255, 0.24), transparent 62%);
+}
 
+/* ─── Backdrop ────────────────────────────────────────────────────────────────
+   Gradient base → video → scrim → grain. The base is what you see while the
+   video buffers and what you see instead of it under reduced motion, so the
+   page is never blank and never unreadable.                                   */
+.bg-base   { position: absolute; inset: 0; }
+.bg-video  { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: cover; }
+.bg-scrim  { position: absolute; inset: 0; }
+
+.grain {
+  position: absolute;
+  inset: -50%;
+  opacity: 0.15;
+  background-image: url("/noise.svg");
+  mix-blend-mode: overlay;
+}
+
+/* Each room's colour identity, independent of whether its video has loaded. */
+[data-bg="room"]        .bg-base { background: radial-gradient(70% 60% at 30% 25%, #3A2418, transparent 70%), radial-gradient(60% 55% at 75% 70%, #1E2438, transparent 72%), #0C0A09; }
+[data-bg="downpour"]    .bg-base { background: radial-gradient(75% 60% at 40% 20%, #24384A, transparent 72%), #0B1016; }
+[data-bg="golden-hour"] .bg-base { background: radial-gradient(80% 65% at 50% 15%, #7A4520, transparent 72%), #180F0A; }
+[data-bg="fog"]         .bg-base { background: radial-gradient(80% 70% at 45% 45%, #3C4650, transparent 74%), #10151A; }
+[data-bg="small-hours"] .bg-base { background: radial-gradient(70% 60% at 60% 25%, #241E3C, transparent 72%), #08070E; }
+
+/* Video off when the viewer asked for less motion — the base carries the page. */
 @media (prefers-reduced-motion: reduce) {
+  .bg-video { display: none; }
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
@@ -47,38 +86,13 @@
   }
 }
 
-/* ─── Weather, for the Forecast room only ─────────────────────────────────── */
-.fx { position: absolute; inset: 0; pointer-events: none; }
+/* ─── Motion ──────────────────────────────────────────────────────────────── */
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes riseIn  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes dotPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-.fx[data-weather="downpour"] {
-  background-image:
-    repeating-linear-gradient(101deg, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px 96px),
-    repeating-linear-gradient(98deg, rgba(255, 255, 255, 0.09) 0 1px, transparent 1px 150px);
-  animation: rain 1.3s linear infinite;
-  opacity: 0.55;
-}
-.fx[data-weather="golden-hour"]::after {
-  content: "";
-  position: absolute;
-  inset: -20% -10% auto -10%;
-  height: 90%;
-  background: linear-gradient(180deg, rgba(255, 198, 130, 0.4), transparent 72%);
-  filter: blur(40px);
-  animation: breathe 10s ease-in-out infinite;
-}
-.fx[data-weather="fog"] {
-  background: linear-gradient(0deg, rgba(220, 226, 232, 0.22), rgba(220, 226, 232, 0.06) 60%, transparent);
-  animation: breathe 12s ease-in-out infinite;
-}
-.fx[data-weather="small-hours"]::after {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 26%;
-  background: linear-gradient(90deg, transparent, rgba(190, 205, 255, 0.4), transparent);
-  filter: blur(18px);
-  animation: sweep 11s ease-in-out infinite;
-}
+.rise   { animation: riseIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.art-in { animation: fadeIn 0.8s ease-out both; }
 
 html { font-feature-settings: 'ss01', 'cv11'; }
 
@@ -86,6 +100,7 @@ body {
   background: var(--floor);
   color: var(--ink);
   font-family: var(--font-geist-sans);
+  overflow-x: hidden;
 }
 
 /* Native range, restyled to a hairline. Beats importing a slider. */
@@ -95,20 +110,21 @@ input[type="range"] {
   background: transparent;
   cursor: pointer;
 }
-input[type="range"]::-webkit-slider-runnable-track { height: 2px; background: var(--line); }
-input[type="range"]::-moz-range-track            { height: 2px; background: var(--line); }
+input[type="range"]::-webkit-slider-runnable-track { height: 3px; border-radius: 999px; background: rgba(255, 255, 255, 0.24); }
+input[type="range"]::-moz-range-track            { height: 3px; border-radius: 999px; background: rgba(255, 255, 255, 0.24); }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   margin-top: -4px;
-  height: 10px;
-  width: 10px;
+  height: 11px;
+  width: 11px;
   border-radius: 999px;
   background: var(--ink);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 input[type="range"]::-moz-range-thumb {
-  height: 10px;
-  width: 10px;
+  height: 11px;
+  width: 11px;
   border: 0;
   border-radius: 999px;
   background: var(--ink);

@@ -1,7 +1,7 @@
 // node --test
 import test from "node:test";
 import assert from "node:assert/strict";
-import { fmt, step, cleanTitle, cleanArtist } from "./player.ts";
+import { fmt, step, cleanTitle, cleanArtist, displayArtist, displayTitle } from "./player.ts";
 
 test("fmt pads and survives garbage", () => {
   assert.equal(fmt(0), "0:00");
@@ -56,6 +56,19 @@ test("cleanTitle does not eat one-word song titles", () => {
   // an unspaced hyphen is part of a word, not a separator
   assert.equal(cleanTitle('[FREE] Lo-Fi x Piano Type Beat "Midnight"'), 'Lo-Fi x Piano Type Beat "Midnight"');
   assert.equal(cleanTitle("Rain"), "Rain");
+});
+
+test("display* prefer the hand-written override", () => {
+  // a DJ set title is written for search, so the label wins
+  assert.equal(
+    displayTitle({ title: "4 HOUR R&B MIX 2026 | Modern R&B Playlist", label: "4 Hour R&B Mix" }),
+    "4 Hour R&B Mix",
+  );
+  // no label, so it falls through to the cleaner
+  assert.equal(displayTitle({ title: "SZA - Good Days (Official Video)" }), "SZA - Good Days");
+  // channel names lose punctuation the real name has
+  assert.equal(displayArtist({ artist: "DAngeloVEVO", by: "D'Angelo" }), "D'Angelo");
+  assert.equal(displayArtist({ artist: "SZAVEVO" }), "SZA");
 });
 
 test("cleanArtist drops channel suffixes", () => {

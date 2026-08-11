@@ -48,6 +48,12 @@ export function displayTitle(track: { title: string; label?: string }): string {
   return track.label ?? cleanTitle(track.title);
 }
 
+/** Who goes under the title: the hand-written name if there is one, otherwise
+ *  the channel with its suffix filed off. */
+export function displayArtist(track: { artist: string; by?: string }): string {
+  return track.by ?? cleanArtist(track.artist);
+}
+
 /** "SZAVEVO" is a channel, not an artist. */
 export function cleanArtist(artist: string): string {
   return artist.replace(/\s*VEVO$/i, "").replace(/\s*-\s*Topic$/i, "").trim();

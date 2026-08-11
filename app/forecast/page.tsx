@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { Player } from "@/components/Player";
-import { FORECAST } from "@/lib/forecast";
+import { Forecast } from "@/components/Forecast";
 
-const title = "Forecast · Pick the weather, we'll score it";
+const title = "Forecast · Pick the weather, we score it";
 const description =
   "Four weather moods, scored in lofi. Downpour, Golden Hour, Fog, Small Hours. A sample build by Scene.";
 
@@ -14,13 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function ForecastPage() {
-  return (
-    <Player
-      weather
-      rooms={FORECAST}
-      name="Forecast"
-      tagline="Pick the weather, we score it"
-      sibling={{ href: "/", label: "← Room Service" }}
-    />
-  );
+  return <Forecast />;
 }

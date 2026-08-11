@@ -1,8 +1,16 @@
-import type { Room } from "./rooms";
+import type { Track } from "./queue";
 
-/** Weather moods, scored in lofi. Same shape as the R&B rooms — one Player,
- *  two datasets. A room's `id` is also its CSS key for the weather layer,
- *  so renaming one here means renaming the `.fx[data-weather=…]` block too.
+export type Room = {
+  id: string;
+  name: string;
+  tagline: string;
+  spotify: { kind: "playlist" | "album"; id: string; title: string } | null;
+  tracks: Track[];
+};
+
+/** Weather moods, scored in lofi. A room's `id` is also its backdrop key — it
+ *  picks the gradient base in `app/globals.css` and the loop in
+ *  `lib/backdrops.ts`, so renaming one here means renaming both.
  *
  *  Mostly long mixes on purpose: a weather room should outlast the weather.
  *  Livestreams are excluded — they have no duration, so the scrubber lies. */
