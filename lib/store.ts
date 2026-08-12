@@ -8,9 +8,17 @@ export type Playlist = {
   title: string;
   tracks: StoredTrack[];
   curated: boolean;
+  /** True once the stored titles are past the 30-day retention window. */
+  stale: boolean;
 };
 
-type Row = { share_code: string; title: string; tracks: StoredTrack[]; curated: boolean };
+type Row = {
+  share_code: string;
+  title: string;
+  tracks: StoredTrack[];
+  curated: boolean;
+  stale: boolean;
+};
 
 /** Tokens are compared as digests, never stored raw. */
 export function hashToken(token: string): string {
@@ -22,13 +30,20 @@ export function newEditToken(): string {
 }
 
 function toPlaylist(row: Row): Playlist {
-  return { code: row.share_code, title: row.title, tracks: row.tracks, curated: row.curated };
+  return {
+    code: row.share_code,
+    title: row.title,
+    tracks: row.tracks,
+    curated: row.curated,
+    stale: row.stale,
+  };
 }
 
 export async function getPlaylist(code: string): Promise<Playlist | null> {
   if (!sql) return null;
   const rows = (await sql`
-    select share_code, title, tracks, curated
+    select share_code, title, tracks, curated,
+           tracks_fetched_at < now() - interval '30 days' as stale
     from playlists
     where share_code = ${code} and not hidden
   `) as Row[];
@@ -38,7 +53,8 @@ export async function getPlaylist(code: string): Promise<Playlist | null> {
 export async function listCurated(): Promise<Playlist[]> {
   if (!sql) return [];
   const rows = (await sql`
-    select share_code, title, tracks, curated
+    select share_code, title, tracks, curated,
+           tracks_fetched_at < now() - interval '30 days' as stale
     from playlists
     where curated and not hidden
     order by created_at desc
@@ -86,7 +102,8 @@ export async function updatePlaylist(
   const rows = (await sql`
     update playlists set
       title  = coalesce(${patch.title ?? null}, title),
-      tracks = coalesce(${patch.tracks ? JSON.stringify(patch.tracks) : null}::jsonb, tracks)
+      tracks = coalesce(${patch.tracks ? JSON.stringify(patch.tracks) : null}::jsonb, tracks),
+      tracks_fetched_at = case when ${patch.tracks ? 1 : 0} = 1 then now() else tracks_fetched_at end
     where share_code = ${code} and edit_token_hash = ${hash} and not curated
     returning share_code
   `) as { share_code: string }[];
@@ -101,4 +118,22 @@ export async function deletePlaylist(code: string, token: string): Promise<boole
     returning share_code
   `) as { share_code: string }[];
   return rows.length > 0;
+}
+
+/** Re-store refreshed titles and restart the 30-day clock.
+ *
+ *  III.E.4.d permits storing Non-Authorized Data provided it is deleted or
+ *  refreshed within 30 calendar days. This is the refresh. It also satisfies
+ *  III.E.4.e ("stored API Data is consistent with the current data available")
+ *  for free: a video renamed on YouTube picks up its new title here.
+ *
+ *  Driven from the read path, so it costs one write per playlist per month
+ *  instead of anything on a schedule. */
+export async function markRefreshed(code: string, tracks: StoredTrack[]): Promise<void> {
+  if (!sql) return;
+  await sql`
+    update playlists
+    set tracks = ${JSON.stringify(tracks)}::jsonb, tracks_fetched_at = now()
+    where share_code = ${code}
+  `;
 }

@@ -35,7 +35,21 @@ create table if not exists playlists (
   --   update playlists set hidden = true where share_code = '...';
   hidden          boolean     not null default false,
 
-  created_at      timestamptz not null default now()
+  created_at      timestamptz not null default now(),
+
+  -- When the titles in `tracks` were last fetched from YouTube.
+  --
+  -- Developer Policies III.E.4.d: an API Client "may temporarily store limited
+  -- amounts of Non-Authorized Data ... but not longer than 30 calendar days.
+  -- ... after 30 calendar days, the API Client must either delete or refresh
+  -- the stored data." Titles and channel names came from YouTube, so they are
+  -- on a clock. This column is that clock; the read path does the refreshing.
+  --
+  -- There is NO exemption for identifiers -- that widespread belief has no
+  -- basis in the policy text. The video ids are kept because the user pasted
+  -- them, so they were never "provided through the YouTube API services",
+  -- which is what III.E.4 actually governs.
+  tracks_fetched_at timestamptz not null default now()
 );
 
 -- The caps above are CHECK constraints rather than handler-only validation on

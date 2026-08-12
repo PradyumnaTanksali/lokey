@@ -97,6 +97,39 @@ kills the old workarounds. The Media Session integration in `lib/useQueue.ts`
 gives lock-screen metadata and desktop media keys — it does not, and cannot,
 survive backgrounding on mobile.
 
+## Stored YouTube data — the 30-day clock
+
+Developer Policies **III.E.4.d**: an API Client "may temporarily store limited
+amounts of Non-Authorized Data ... but not longer than 30 calendar days ...
+after 30 calendar days, the API Client must either delete or refresh the stored
+data." III.E.4.e adds that stored data must stay "consistent with the current
+data available through YouTube API Services".
+
+**There is no exemption for identifiers.** The widely repeated belief that video
+IDs may be stored forever has no basis in the policy text — it was checked
+clause by clause, not assumed.
+
+How this build handles it:
+
+- `playlists.tracks_fetched_at` is the clock. Reading a playlist older than 30
+  days re-fetches its titles and restarts it (`lib/resolveTrack.ts`,
+  `markRefreshed`). One write per playlist per month, no scheduled job, and a
+  video renamed on YouTube picks up its new title for free.
+- **Video ids are kept indefinitely, deliberately.** III.E.4 governs API Data,
+  defined by provenance as data "provided to API Clients through the YouTube
+  API services". An id the user pasted from their address bar came from the
+  user, not from an API. That is a reading of the definition rather than a
+  permission the policy grants — it is defensible, not certain.
+- Anything fetched through the Data API (playlist imports) is unambiguously
+  Non-Authorized Data and sits squarely under the same 30-day clock.
+
+**Still open:** `lib/queue.ts` and `lib/forecast.ts` hold oEmbed titles in the
+repo indefinitely, which is the same clause with no refresh path. The
+hand-written `label`/`by` fields are ours and unaffected; the verbatim `title`
+and `artist` fields are the exposure. Options are to drop the verbatim fields
+and keep only the hand-written ones, or to accept it for a fixed catalogue of
+52 videos. Not yet decided.
+
 ## Database — one-time setup
 
 Playlists and curated rooms need Postgres. Everything else works without it:
@@ -113,7 +146,11 @@ and the pages say so rather than crashing.
 psql "$DATABASE_URL_UNPOOLED" -f db/001_init.sql
 ```
 
-4. In Vercel's Firewall settings, add one rate-limit rule keyed on IP against
+4. Optional, for playlist import: enable **YouTube Data API v3** in Google
+   Cloud, create an API key, add it as `YOUTUBE_API_KEY`. Without it, importing
+   a playlist link declines cleanly and adding songs one at a time still works.
+   Quota is 10,000 units/day; a 100-track import costs 3.
+5. In Vercel's Firewall settings, add one rate-limit rule keyed on IP against
    `POST /api/playlists`. Hobby allows exactly one rule, which is why creation
    is a Route Handler with a stable path rather than a Server Action.
 
