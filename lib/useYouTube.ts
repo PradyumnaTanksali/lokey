@@ -90,7 +90,10 @@ export function useYouTube({ onEnded, onError }: Options) {
       if (cancelled || !hostRef.current || playerRef.current) return;
       playerRef.current = new YT.Player(hostRef.current, {
         host: "https://www.youtube-nocookie.com",
-        playerVars: { playsinline: 1, controls: 0, disablekb: 1, rel: 0, origin: window.location.origin },
+        // controls and keyboard stay ON. RMF forbids modifying player
+        // functionality beyond the documented API, and stripping the controls
+        // off a visible player is exactly what that is aimed at.
+        playerVars: { playsinline: 1, rel: 0, origin: window.location.origin },
         events: {
           onReady: () => setReady(true),
           onStateChange: (e) => {

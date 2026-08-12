@@ -45,6 +45,7 @@
 [data-bg="golden-hour"] .bg-base { background: radial-gradient(85% 70% at 50% 25%, #8A4326, transparent 74%), #1C0F0C; }
 [data-bg="fog"]         .bg-base { background: radial-gradient(60% 50% at 50% 62%, #6B4B32, transparent 70%), radial-gradient(85% 70% at 45% 35%, #2B3540, transparent 74%), #0D1116; }
 [data-bg="small-hours"] .bg-base { background: radial-gradient(50% 40% at 50% 75%, #7A5A2E, transparent 70%), radial-gradient(80% 65% at 55% 25%, #1F2440, transparent 74%), #08070E; }
+[data-bg="cover"]       .bg-base { background: radial-gradient(65% 55% at 35% 30%, #2A2320, transparent 70%), radial-gradient(60% 55% at 72% 68%, #1B2030, transparent 72%), #0C0A09; }
 
 /* Video off when the viewer asked for less motion — the base carries the page. */
 @media (prefers-reduced-motion: reduce) {

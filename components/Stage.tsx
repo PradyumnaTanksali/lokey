@@ -8,7 +8,7 @@ import { useQueue } from "@/lib/useQueue";
 import { displayArtist, displayTitle } from "@/lib/player";
 import { Backdrop } from "./Backdrop";
 import { Mark } from "./Mark";
-import { Art } from "./Art";
+import { YouTubePlayer } from "./YouTubePlayer";
 import { Seek, Controls } from "./Transport";
 
 const label = "font-mono text-[10px] uppercase tracking-[0.2em]";
@@ -39,11 +39,6 @@ export function Stage() {
         scrim="from-black/60 via-black/42 to-black/88"
       />
 
-      {/* Audio only — the room is the interface. */}
-      <div inert aria-hidden="true" className="fixed -left-[9999px] top-0 h-[180px] w-[320px]">
-        <div ref={hostRef} />
-      </div>
-
       <div className="relative flex min-h-dvh flex-col px-6 py-6 sm:px-10">
         <header className={`${label} flex items-center justify-between gap-4 text-ink-muted`}>
           <span className="tabular-nums">{clock}</span>
@@ -57,55 +52,51 @@ export function Stage() {
           </span>
 
           <nav className="flex gap-5">
+            <Link href="/curated" className="transition-colors hover:text-ink">
+              Curated
+            </Link>
+            <Link href="/playlists" className="transition-colors hover:text-ink">
+              Playlists
+            </Link>
             <a
               href={`https://open.spotify.com/playlist/${SPOTIFY.id}`}
               target="_blank"
               rel="noreferrer"
-              className="transition-colors hover:text-ink"
+              className="hidden transition-colors hover:text-ink sm:inline"
             >
               Spotify ↗
-            </a>
-            <a
-              href={`https://music.youtube.com/watch?v=${track.yt}`}
-              target="_blank"
-              rel="noreferrer"
-              className="transition-colors hover:text-ink"
-            >
-              YT Music ↗
             </a>
           </nav>
         </header>
 
-        <div className="flex flex-1 flex-col items-center justify-center py-16">
-          <Mark className="rise h-9 w-auto text-ink/75 [filter:drop-shadow(0_2px_18px_rgba(0,0,0,0.6))]" />
-          <h1 className="rise mt-7 text-center font-serif text-[clamp(3.5rem,13vw,10rem)] leading-[0.84] tracking-[-0.02em] [text-shadow:0_2px_50px_rgba(0,0,0,0.65)]" style={{ animationDelay: "80ms" }}>
+        <div className="flex flex-1 flex-col items-center justify-center py-10">
+          <Mark className="rise h-8 w-auto text-ink/75 [filter:drop-shadow(0_2px_18px_rgba(0,0,0,0.6))]" />
+          <h1
+            className="rise mt-6 text-center font-serif text-[clamp(3rem,11vw,8rem)] leading-[0.84] tracking-[-0.02em] [text-shadow:0_2px_50px_rgba(0,0,0,0.65)]"
+            style={{ animationDelay: "80ms" }}
+          >
             Lokey
           </h1>
         </div>
 
-        {/* No panel. The type sits straight on the footage, and the scrubber is
-            the only horizontal line on the page. */}
+        {/* The player is visible and stays visible — see YouTubePlayer for why. */}
         <div className="rise mx-auto w-full max-w-5xl" style={{ animationDelay: "200ms" }}>
-          <div className="flex items-end justify-between gap-6">
-            <div className="flex min-w-0 items-center gap-4">
-              <Art
-                videoId={track.yt}
-                alt={`Cover art for ${displayTitle(track)}`}
-                className="art-in size-12 shrink-0 rounded-lg object-cover shadow-[0_8px_24px_rgba(0,0,0,0.55)]"
-              />
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:gap-7">
+            <YouTubePlayer hostRef={hostRef} className="sm:w-[380px] sm:shrink-0" />
+
+            <div className="flex min-w-0 flex-1 flex-col gap-5">
               <div className="min-w-0">
                 <p className="truncate text-[15px] leading-tight">{displayTitle(track)}</p>
                 <p className={`${label} mt-1.5 truncate text-ink-faint`}>{displayArtist(track)}</p>
               </div>
+              <Controls
+                playing={playing}
+                ready={ready}
+                onPrev={() => skip(-1)}
+                onNext={() => skip(1)}
+                onToggle={toggle}
+              />
             </div>
-
-            <Controls
-              playing={playing}
-              ready={ready}
-              onPrev={() => skip(-1)}
-              onNext={() => skip(1)}
-              onToggle={toggle}
-            />
           </div>
 
           <div className="mt-5">

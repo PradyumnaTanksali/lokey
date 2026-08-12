@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Track } from "./queue";
-import { step } from "./player";
+import { displayArtist, displayTitle, step } from "./player";
 import { useYouTube } from "./useYouTube";
 
-/** Queue state, keyboard, and the dead-track recovery — the part both layouts
- *  share. The markup is where Lokey and Forecast actually differ. */
+/** Queue state, keyboard, Media Session, and dead-track recovery — everything
+ *  every page shares. The markup is where the pages actually differ. */
 export function useQueue(tracks: Track[]) {
   const [index, setIndex] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
@@ -27,7 +27,7 @@ export function useQueue(tracks: Track[]) {
     },
   });
 
-  const { ready, playing, load, play, pause } = yt;
+  const { ready, playing, elapsed, duration, load, play, pause, seek } = yt;
   const track = tracks[index];
 
   // A new list is a new queue. Adjusted during render rather than in an effect
@@ -76,6 +76,63 @@ export function useQueue(tracks: Track[]) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [toggle, skip]);
+
+  // ─── Media Session ────────────────────────────────────────────────────────
+  // Worth being straight about what this buys: it does NOT survive backgrounding
+  // on mobile, because YouTube stops playback there regardless. It earns its
+  // keep on desktop, where it makes the hardware media keys work, and in the
+  // notification card while the tab is in front.
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: displayTitle(track),
+      artist: displayArtist(track),
+      album: "Lokey",
+      artwork: [
+        { src: `https://i.ytimg.com/vi/${track.yt}/maxresdefault.jpg`, sizes: "1280x720", type: "image/jpeg" },
+        { src: `https://i.ytimg.com/vi/${track.yt}/hqdefault.jpg`, sizes: "480x360", type: "image/jpeg" },
+      ],
+    });
+  }, [track]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    const ms = navigator.mediaSession;
+    const handlers: [MediaSessionAction, MediaSessionActionHandler][] = [
+      ["play", () => { started.current = true; play(); }],
+      ["pause", () => pause()],
+      ["previoustrack", () => skip(-1)],
+      ["nexttrack", () => skip(1)],
+      ["seekto", (d) => { if (d.seekTime != null) seek(d.seekTime); }],
+    ];
+    for (const [action, handler] of handlers) {
+      // Older engines throw on actions they don't implement rather than ignoring.
+      try { ms.setActionHandler(action, handler); } catch { /* unsupported action */ }
+    }
+    return () => {
+      for (const [action] of handlers) {
+        try { ms.setActionHandler(action, null); } catch { /* unsupported action */ }
+      }
+    };
+  }, [play, pause, skip, seek]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+  }, [playing]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || !navigator.mediaSession.setPositionState) return;
+    if (!Number.isFinite(duration) || duration <= 0) return;
+    // Throws if position exceeds duration, which the 4Hz poll can briefly do.
+    try {
+      navigator.mediaSession.setPositionState({
+        duration,
+        position: Math.min(Math.max(elapsed, 0), duration),
+        playbackRate: 1,
+      });
+    } catch { /* position raced past duration between polls */ }
+  }, [elapsed, duration]);
 
   return { ...yt, index, track, notice, skip, toggle, pick };
 }
