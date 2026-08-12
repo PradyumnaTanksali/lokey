@@ -25,6 +25,21 @@ export function isShareCode(value: string): boolean {
 
 const VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
 
+/** Playlist ids are longer and more varied than video ids: PL…, OLAK5uy_…,
+ *  RD…, UU…, FL…. Deliberately only ever read out of a url's `list=` param —
+ *  a bare 11-character video id would match this pattern too, so accepting
+ *  bare list ids would make "is this a video or a playlist" ambiguous. */
+const LIST_ID = /^[A-Za-z0-9_-]{12,64}$/;
+
+/** Personal lists. They resolve for their owner and nobody else, so importing
+ *  one silently yields an empty playlist — better to say why. */
+const PRIVATE_LISTS = new Set(["LM", "WL", "LL"]);
+
+function isYouTubeHost(url: URL): boolean {
+  if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+  return /^(?:(?:www|music|m)\.)?youtube\.com$|^youtu\.be$/.test(url.hostname);
+}
+
 /** Paths whose last segment is a handle or list id, not a video. Without this,
  *  `youtube.com/@someuser11` parses as a video id and we'd store nonsense. */
 const NOT_VIDEO = new Set(["playlist", "results", "channel", "user", "c", "feed", "hashtag"]);
@@ -45,8 +60,7 @@ export function parseVideoId(input: string): string | null {
   } catch {
     return null;
   }
-  if (url.protocol !== "http:" && url.protocol !== "https:") return null;
-  if (!/^(?:(?:www|music|m)\.)?youtube\.com$|^youtu\.be$/.test(url.hostname)) return null;
+  if (!isYouTubeHost(url)) return null;
 
   const v = url.searchParams.get("v");
   if (v && VIDEO_ID.test(v)) return v;
@@ -106,4 +120,37 @@ export function parseStoredTracks(value: unknown): StoredTrack[] | null {
     out.push({ v, t: t.slice(0, 200), a: a.slice(0, 120) });
   }
   return out;
+}
+
+/** The playlist id from a url, or null. YouTube Music playlist links carry the
+ *  same `list=` param as youtube.com, so both work without special-casing. */
+export function parseListId(input: string): string | null {
+  let url: URL;
+  try {
+    url = new URL(input.trim());
+  } catch {
+    return null;
+  }
+  if (!isYouTubeHost(url)) return null;
+
+  const list = url.searchParams.get("list");
+  if (!list || !LIST_ID.test(list) || PRIVATE_LISTS.has(list)) return null;
+  return list;
+}
+
+export type PastedLink = { kind: "video"; id: string } | { kind: "list"; id: string };
+
+/** What did the user actually paste?
+ *
+ *  A `/watch?v=X&list=Y` url is both. It resolves to the video, because that is
+ *  the thing the user was looking at when they copied it — importing the whole
+ *  list stays a separate, explicit action in the UI. */
+export function classifyLink(input: string): PastedLink | null {
+  const video = parseVideoId(input);
+  if (video) return { kind: "video", id: video };
+
+  const list = parseListId(input);
+  if (list) return { kind: "list", id: list };
+
+  return null;
 }

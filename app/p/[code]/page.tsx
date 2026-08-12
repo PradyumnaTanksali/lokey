@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Room } from "@/components/Room";
+import { PlaylistEditor } from "@/components/PlaylistEditor";
 import { getPlaylist } from "@/lib/store";
 import { isShareCode, toTrack } from "@/lib/playlists";
 
@@ -29,6 +30,11 @@ export default async function PlaylistPage({
       note={code}
       tracks={playlist.tracks.map(toTrack)}
       back={{ href: "/playlists", label: "Playlists →" }}
+      editor={
+        playlist.curated ? null : (
+          <PlaylistEditor code={code} title={playlist.title} tracks={playlist.tracks} />
+        )
+      }
     />
   );
 }

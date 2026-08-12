@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { Track } from "@/lib/queue";
 import { useQueue } from "@/lib/useQueue";
 import { displayArtist, displayTitle } from "@/lib/player";
@@ -17,13 +18,15 @@ type Props = {
   /** Shown under the title — a share code, or a curator's note. */
   note?: string;
   back: { href: string; label: string };
+  /** Edit controls, rendered only when the viewer owns the playlist. */
+  editor?: ReactNode;
 };
 
 /** One player for anything that is just a list of tracks: curated rooms and
  *  shared playlists both land here. The backdrop is the current track's cover
  *  art rather than footage, with the gradient base underneath carrying the
  *  screen whenever the art is missing or slow. */
-export function Room({ title, tracks, note, back }: Props) {
+export function Room({ title, tracks, note, back, editor }: Props) {
   const { hostRef, ready, playing, elapsed, duration, index, track, notice, skip, toggle, pick, seek } =
     useQueue(tracks);
 
@@ -105,6 +108,8 @@ export function Room({ title, tracks, note, back }: Props) {
               ))}
             </ol>
           </details>
+
+          {editor}
         </div>
       </div>
     </>

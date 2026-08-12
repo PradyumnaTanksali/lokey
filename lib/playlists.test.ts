@@ -8,6 +8,8 @@ import {
   parseVideoId,
   normalizeTitle,
   parseStoredTracks,
+  parseListId,
+  classifyLink,
   CODE_LENGTH,
 } from "./playlists.ts";
 
@@ -102,4 +104,40 @@ test("parseStoredTracks rejects anything off-shape", () => {
   const long = parseStoredTracks([{ v: "dHU8B76kR_s", t: "x".repeat(500), a: "y".repeat(500) }]);
   assert.equal(long?.[0].t.length, 200);
   assert.equal(long?.[0].a.length, 120);
+});
+
+test("parseListId reads YouTube and YouTube Music playlist links", () => {
+  const list = "PLFgquLnL59alW3xmYiWRaoz0oM3H17Lth";
+  assert.equal(parseListId(`https://www.youtube.com/playlist?list=${list}`), list);
+  assert.equal(parseListId(`https://music.youtube.com/playlist?list=${list}`), list);
+  assert.equal(parseListId(`https://m.youtube.com/playlist?list=${list}`), list);
+  assert.equal(parseListId(`https://www.youtube.com/watch?v=dHU8B76kR_s&list=${list}`), list);
+  // YouTube Music album lists use their own prefix
+  const album = "OLAK5uy_kBGpHkNPmQm7bBpEXAMPLEIDvalue";
+  assert.equal(parseListId(`https://music.youtube.com/playlist?list=${album}`), album);
+});
+
+test("parseListId refuses private lists and other hosts", () => {
+  // personal lists resolve for their owner and nobody else
+  assert.equal(parseListId("https://www.youtube.com/playlist?list=LM"), null);
+  assert.equal(parseListId("https://www.youtube.com/playlist?list=WL"), null);
+  // same SSRF guard as videos
+  assert.equal(parseListId("https://evil.example.com/playlist?list=PLFgquLnL59alW3xm"), null);
+  assert.equal(parseListId("https://www.youtube.com/playlist"), null);
+  // a bare id is never accepted: an 11-char video id would match the pattern
+  assert.equal(parseListId("PLFgquLnL59alW3xmYiWRaoz0oM3H17Lth"), null);
+});
+
+test("classifyLink prefers the video in a watch-inside-playlist url", () => {
+  const list = "PLFgquLnL59alW3xmYiWRaoz0oM3H17Lth";
+  assert.deepEqual(classifyLink(`https://www.youtube.com/watch?v=dHU8B76kR_s&list=${list}`), {
+    kind: "video",
+    id: "dHU8B76kR_s",
+  });
+  assert.deepEqual(classifyLink(`https://www.youtube.com/playlist?list=${list}`), {
+    kind: "list",
+    id: list,
+  });
+  assert.deepEqual(classifyLink("dHU8B76kR_s"), { kind: "video", id: "dHU8B76kR_s" });
+  assert.equal(classifyLink("https://example.com"), null);
 });

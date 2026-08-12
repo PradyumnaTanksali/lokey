@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Mark } from "./Mark";
 import { Backdrop } from "./Backdrop";
-import { isShareCode, parseVideoId, TITLE_MAX, TRACKS_MAX, type StoredTrack } from "@/lib/playlists";
+import { isShareCode, TITLE_MAX, TRACKS_MAX, type StoredTrack } from "@/lib/playlists";
+import { tracksFromLink } from "@/lib/addTracks";
 import { rememberPlaylist, useSavedPlaylists, type Saved } from "@/lib/savedPlaylists";
 
 const label = "font-mono text-[10px] uppercase tracking-[0.2em]";
@@ -22,20 +23,22 @@ export function Playlists() {
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<Saved | null>(null);
 
-  async function addTrack() {
+  async function add() {
     setError(null);
-    if (!parseVideoId(url)) return setError("That is not a YouTube link.");
-    if (draft.length >= TRACKS_MAX) return setError(`${TRACKS_MAX} tracks is the limit.`);
-
     setBusy(true);
     try {
-      const res = await fetch(`/api/resolve?url=${encodeURIComponent(url)}`);
-      if (!res.ok) throw new Error();
-      const track = (await res.json()) as StoredTrack;
-      setDraft((d) => [...d, track]);
+      const { tracks, name } = await tracksFromLink(url);
+      const room = TRACKS_MAX - draft.length;
+      if (room <= 0) throw new Error(`${TRACKS_MAX} tracks is the limit.`);
+      if (tracks.length > room) {
+        setError(`Only the first ${room} fit — ${TRACKS_MAX} tracks is the limit.`);
+      }
+      setDraft((d) => [...d, ...tracks.slice(0, room)]);
+      // A playlist brings its own name; don't overwrite one already typed.
+      if (name && !title.trim()) setTitle(name.slice(0, TITLE_MAX));
       setUrl("");
-    } catch {
-      setError("Could not look that one up.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not add that.");
     } finally {
       setBusy(false);
     }
@@ -103,7 +106,7 @@ export function Playlists() {
             Playlists
           </h1>
           <p className={`${label} mt-4 text-center text-ink-faint`}>
-            Paste links · get a code · send it on
+            Songs or whole playlists · get a code · send it on
           </p>
         </div>
 
@@ -136,19 +139,19 @@ export function Playlists() {
           <div className="mt-3 flex gap-2">
             <input
               className={field}
-              placeholder="Paste a YouTube link"
+              placeholder="Paste a song or playlist link"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  void addTrack();
+                  void add();
                 }
               }}
             />
             <button
               type="button"
-              onClick={() => void addTrack()}
+              onClick={() => void add()}
               disabled={busy || !url}
               className={`${button} shrink-0 bg-ink text-floor hover:opacity-85`}
             >
