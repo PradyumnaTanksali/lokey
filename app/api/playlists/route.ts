@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { dbConfigured } from "@/lib/db";
 import { createPlaylist } from "@/lib/store";
 import { normalizeTitle, parseStoredTracks } from "@/lib/playlists";
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "expected an object" }, { status: 400 });
   }
 
-  const { title: rawTitle, tracks: rawTracks } = body as Record<string, unknown>;
+  const { title: rawTitle, tracks: rawTracks, public: rawPublic } = body as Record<string, unknown>;
 
   const title = typeof rawTitle === "string" ? normalizeTitle(rawTitle) : null;
   if (!title) {
@@ -51,7 +52,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { code, editToken } = await createPlaylist(title, tracks);
+    const isPublic = rawPublic === true;
+    const { code, editToken } = await createPlaylist(title, tracks, isPublic);
+    if (isPublic) revalidatePath("/global");
     return NextResponse.json({ code, editToken }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "could not save that" }, { status: 500 });

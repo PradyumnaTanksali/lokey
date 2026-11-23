@@ -8,6 +8,8 @@ export type Playlist = {
   title: string;
   tracks: StoredTrack[];
   curated: boolean;
+  /** Listed on /global. */
+  public: boolean;
   /** True once the stored titles are past the 30-day retention window. */
   stale: boolean;
 };
@@ -17,6 +19,7 @@ type Row = {
   title: string;
   tracks: StoredTrack[];
   curated: boolean;
+  public: boolean;
   stale: boolean;
 };
 
@@ -35,6 +38,7 @@ function toPlaylist(row: Row): Playlist {
     title: row.title,
     tracks: row.tracks,
     curated: row.curated,
+    public: row.public,
     stale: row.stale,
   };
 }
@@ -42,7 +46,7 @@ function toPlaylist(row: Row): Playlist {
 export async function getPlaylist(code: string): Promise<Playlist | null> {
   if (!sql) return null;
   const rows = (await sql`
-    select share_code, title, tracks, curated,
+    select share_code, title, tracks, curated, public,
            tracks_fetched_at < now() - interval '30 days' as stale
     from playlists
     where share_code = ${code} and not hidden
@@ -53,12 +57,26 @@ export async function getPlaylist(code: string): Promise<Playlist | null> {
 export async function listCurated(): Promise<Playlist[]> {
   if (!sql) return [];
   const rows = (await sql`
-    select share_code, title, tracks, curated,
+    select share_code, title, tracks, curated, public,
            tracks_fetched_at < now() - interval '30 days' as stale
     from playlists
     where curated and not hidden
     order by created_at desc
     limit 24
+  `) as Row[];
+  return rows.map(toPlaylist);
+}
+
+/** Playlists people chose to list. Same shape as curated, different filter. */
+export async function listGlobal(): Promise<Playlist[]> {
+  if (!sql) return [];
+  const rows = (await sql`
+    select share_code, title, tracks, curated, public,
+           tracks_fetched_at < now() - interval '30 days' as stale
+    from playlists
+    where public and not hidden and not curated
+    order by created_at desc
+    limit 60
   `) as Row[];
   return rows.map(toPlaylist);
 }
@@ -70,6 +88,7 @@ export async function listCurated(): Promise<Playlist[]> {
 export async function createPlaylist(
   title: string,
   tracks: StoredTrack[],
+  isPublic: boolean,
 ): Promise<{ code: string; editToken: string }> {
   if (!sql) throw new Error("database not configured");
 
@@ -79,8 +98,8 @@ export async function createPlaylist(
   for (let attempt = 0; attempt < 2; attempt++) {
     const code = shareCodeFrom(randomBytes(10));
     const rows = (await sql`
-      insert into playlists (share_code, title, edit_token_hash, tracks)
-      values (${code}, ${title}, ${hash}, ${JSON.stringify(tracks)}::jsonb)
+      insert into playlists (share_code, title, edit_token_hash, tracks, public)
+      values (${code}, ${title}, ${hash}, ${JSON.stringify(tracks)}::jsonb, ${isPublic})
       on conflict (share_code) do nothing
       returning share_code
     `) as { share_code: string }[];
@@ -95,13 +114,14 @@ export async function createPlaylist(
 export async function updatePlaylist(
   code: string,
   token: string,
-  patch: { title?: string; tracks?: StoredTrack[] },
+  patch: { title?: string; tracks?: StoredTrack[]; public?: boolean },
 ): Promise<boolean> {
   if (!sql) return false;
   const hash = hashToken(token);
   const rows = (await sql`
     update playlists set
       title  = coalesce(${patch.title ?? null}, title),
+      public = coalesce(${patch.public ?? null}::boolean, public),
       tracks = coalesce(${patch.tracks ? JSON.stringify(patch.tracks) : null}::jsonb, tracks),
       tracks_fetched_at = case when ${patch.tracks ? 1 : 0} = 1 then now() else tracks_fetched_at end
     where share_code = ${code} and edit_token_hash = ${hash} and not curated

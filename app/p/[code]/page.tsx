@@ -43,7 +43,12 @@ export default async function PlaylistPage({
       back={{ href: "/playlists", label: "Playlists →" }}
       editor={
         playlist.curated ? null : (
-          <PlaylistEditor code={code} title={playlist.title} tracks={tracks} />
+          <PlaylistEditor
+            code={code}
+            title={playlist.title}
+            tracks={tracks}
+            listed={playlist.public}
+          />
         )
       }
     />

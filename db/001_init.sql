@@ -31,6 +31,10 @@ create table if not exists playlists (
   -- Dev-curated rooms are ordinary playlists with this set.
   curated         boolean     not null default false,
 
+  -- Opt-in listing on /global. Off by default: a code-only playlist was
+  -- promised to stay unlisted, so nothing becomes public without a tick.
+  public          boolean     not null default false,
+
   -- The entire moderation feature. The tool is the Neon SQL editor:
   --   update playlists set hidden = true where share_code = '...';
   hidden          boolean     not null default false,
@@ -55,7 +59,12 @@ create table if not exists playlists (
 -- The caps above are CHECK constraints rather than handler-only validation on
 -- purpose: they hold even when someone patches a route at 2am and forgets.
 
--- Curated rooms are the only thing ever listed, so index just those rows.
+-- Curated rooms and opted-in public playlists are the only things ever
+-- listed, so index just those rows.
 create index if not exists playlists_curated_idx
   on playlists (created_at desc)
   where curated and not hidden;
+
+create index if not exists playlists_public_idx
+  on playlists (created_at desc)
+  where public and not hidden and not curated;

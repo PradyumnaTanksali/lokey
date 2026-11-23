@@ -17,11 +17,12 @@ export function Playlists() {
   const mine = useSavedPlaylists();
   const [draft, setDraft] = useState<StoredTrack[]>([]);
   const [title, setTitle] = useState("");
+  const [listed, setListed] = useState(false);
   const [url, setUrl] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [created, setCreated] = useState<Saved | null>(null);
+  const [created, setCreated] = useState<(Saved & { listed: boolean }) | null>(null);
 
   async function add() {
     setError(null);
@@ -51,15 +52,16 @@ export function Playlists() {
       const res = await fetch("/api/playlists", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ title, tracks: draft }),
+        body: JSON.stringify({ title, tracks: draft, public: listed }),
       });
       const data = (await res.json()) as { code?: string; editToken?: string; error?: string };
       if (!res.ok || !data.code) throw new Error(data.error ?? "");
       const entry: Saved = { code: data.code, title, editToken: data.editToken };
       rememberPlaylist(entry);
-      setCreated(entry);
+      setCreated({ ...entry, listed });
       setDraft([]);
       setTitle("");
+      setListed(false);
     } catch (e) {
       setError(e instanceof Error && e.message ? e.message : "Could not save that.");
     } finally {
@@ -96,9 +98,14 @@ export function Playlists() {
             <Mark className="size-3.5" />
             Lokey
           </Link>
-          <Link href="/curated" className="transition-colors hover:text-ink">
-            Curated →
-          </Link>
+          <nav className="flex gap-5">
+            <Link href="/global" className="transition-colors hover:text-ink">
+              Global →
+            </Link>
+            <Link href="/curated" className="transition-colors hover:text-ink">
+              Curated →
+            </Link>
+          </nav>
         </header>
 
         <div className="py-12">
@@ -106,7 +113,7 @@ export function Playlists() {
             Playlists
           </h1>
           <p className={`${label} mt-4 text-center text-ink-faint`}>
-            Songs or whole playlists · get a code · send it on
+            YouTube or Spotify links · get a code · send it on
           </p>
         </div>
 
@@ -127,7 +134,7 @@ export function Playlists() {
               </Link>
             </div>
             <p className="mt-4 text-xs text-ink-faint">
-              Anyone with the code can listen. Editing rights live in this browser only — clear your
+              Anyone with the code can listen{created.listed ? ", and it's listed in Global" : ""}. Editing rights live in this browser only — clear your
               site data and they are gone for good, because there is no account to recover them from.
             </p>
           </div>
@@ -139,7 +146,7 @@ export function Playlists() {
           <div className="mt-3 flex gap-2">
             <input
               className={field}
-              placeholder="Paste a song or playlist link"
+              placeholder="Paste a YouTube or Spotify link"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => {
@@ -202,6 +209,15 @@ export function Playlists() {
                   Create
                 </button>
               </div>
+              <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm text-ink-muted">
+                <input
+                  type="checkbox"
+                  checked={listed}
+                  onChange={(e) => setListed(e.target.checked)}
+                  className="accent-current"
+                />
+                Show in Global — anyone browsing Lokey can find it
+              </label>
             </>
           )}
         </section>
@@ -261,7 +277,7 @@ export function Playlists() {
         )}
 
         <footer className={`${label} mt-auto pt-10 text-center text-ink-faint`}>
-          Nothing here is public. Playlists exist only at their code.
+          Unlisted unless you tick Show in Global. Otherwise a playlist exists only at its code.
         </footer>
       </div>
     </>

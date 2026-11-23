@@ -11,7 +11,7 @@ const field =
   "w-full rounded-lg border border-line bg-white/[0.04] px-3 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-ink/40 focus:outline-none";
 const button = `${label} rounded-full px-4 py-2.5 transition-colors disabled:opacity-40`;
 
-type Props = { code: string; title: string; tracks: StoredTrack[] };
+type Props = { code: string; title: string; tracks: StoredTrack[]; listed: boolean };
 
 /** Renders only for whoever holds the edit token for this playlist — which is
  *  to say, only in the browser that created it. Everyone else, including anyone
@@ -20,13 +20,19 @@ type Props = { code: string; title: string; tracks: StoredTrack[] };
  *  The token is sent in a header rather than the url: query strings leak into
  *  `Referer`, server logs and analytics, and a capability that leaks is a
  *  capability you have given away. */
-export function PlaylistEditor({ code, title: initialTitle, tracks: initialTracks }: Props) {
+export function PlaylistEditor({
+  code,
+  title: initialTitle,
+  tracks: initialTracks,
+  listed: initialListed,
+}: Props) {
   const saved = useSavedPlaylists();
   const token = saved.find((p) => p.code === code)?.editToken;
 
   const router = useRouter();
   const [tracks, setTracks] = useState(initialTracks);
   const [title, setTitle] = useState(initialTitle);
+  const [listed, setListed] = useState(initialListed);
   const [url, setUrl] = useState("");
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
@@ -34,7 +40,9 @@ export function PlaylistEditor({ code, title: initialTitle, tracks: initialTrack
   if (!token) return null;
 
   const dirty =
-    title !== initialTitle || JSON.stringify(tracks) !== JSON.stringify(initialTracks);
+    title !== initialTitle ||
+    listed !== initialListed ||
+    JSON.stringify(tracks) !== JSON.stringify(initialTracks);
 
   async function add() {
     setNote(null);
@@ -60,7 +68,7 @@ export function PlaylistEditor({ code, title: initialTitle, tracks: initialTrack
       const res = await fetch(`/api/playlists/${code}`, {
         method: "PATCH",
         headers: { "content-type": "application/json", "x-edit-token": token! },
-        body: JSON.stringify({ title, tracks }),
+        body: JSON.stringify({ title, tracks, public: listed }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "Save failed.");
       setNote("Saved.");
@@ -83,7 +91,7 @@ export function PlaylistEditor({ code, title: initialTitle, tracks: initialTrack
       <div className="mt-4 flex gap-2">
         <input
           className={field}
-          placeholder="Add a song or playlist link"
+          placeholder="Add a YouTube or Spotify link"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => {
@@ -109,6 +117,16 @@ export function PlaylistEditor({ code, title: initialTitle, tracks: initialTrack
         maxLength={TITLE_MAX}
         onChange={(e) => setTitle(e.target.value)}
       />
+
+      <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm text-ink-muted">
+        <input
+          type="checkbox"
+          checked={listed}
+          onChange={(e) => setListed(e.target.checked)}
+          className="accent-current"
+        />
+        Show in Global
+      </label>
 
       <ol className="mt-4 border-t border-line-soft">
         {tracks.map((t, i) => (

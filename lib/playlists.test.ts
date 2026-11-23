@@ -10,6 +10,7 @@ import {
   parseStoredTracks,
   parseListId,
   classifyLink,
+  parseSpotifyTrack,
   CODE_LENGTH,
 } from "./playlists.ts";
 
@@ -140,4 +141,25 @@ test("classifyLink prefers the video in a watch-inside-playlist url", () => {
   });
   assert.deepEqual(classifyLink("dHU8B76kR_s"), { kind: "video", id: "dHU8B76kR_s" });
   assert.equal(classifyLink("https://example.com"), null);
+});
+
+test("parseSpotifyTrack reads song links and uris", () => {
+  const id = "4cOdK2wGLETKBW3PvgPWqT";
+  assert.equal(parseSpotifyTrack(`https://open.spotify.com/track/${id}`), id);
+  assert.equal(parseSpotifyTrack(`https://open.spotify.com/track/${id}?si=abc123`), id);
+  assert.equal(parseSpotifyTrack(`https://open.spotify.com/intl-de/track/${id}`), id);
+  assert.equal(parseSpotifyTrack(`  spotify:track:${id} `), id);
+  assert.deepEqual(classifyLink(`https://open.spotify.com/track/${id}`), { kind: "spotify", id });
+});
+
+test("parseSpotifyTrack refuses playlists, albums, short links and lookalikes", () => {
+  const id = "4cOdK2wGLETKBW3PvgPWqT";
+  assert.equal(parseSpotifyTrack(`https://open.spotify.com/playlist/${id}`), null);
+  assert.equal(parseSpotifyTrack(`https://open.spotify.com/album/${id}`), null);
+  assert.equal(parseSpotifyTrack("https://spotify.link/AbCdEf"), null);
+  assert.equal(parseSpotifyTrack(`http://open.spotify.com/track/${id}`), null);
+  assert.equal(parseSpotifyTrack(`https://open.spotify.com.evil.test/track/${id}`), null);
+  assert.equal(parseSpotifyTrack(`https://open.spotify.com/track/${id}/extra`), null);
+  assert.equal(parseSpotifyTrack("https://open.spotify.com/track/short"), null);
+  assert.equal(classifyLink(`https://open.spotify.com/playlist/${id}`), null);
 });

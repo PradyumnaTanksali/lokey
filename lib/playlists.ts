@@ -138,7 +138,38 @@ export function parseListId(input: string): string | null {
   return list;
 }
 
-export type PastedLink = { kind: "video"; id: string } | { kind: "list"; id: string };
+const SPOTIFY_ID = /^[A-Za-z0-9]{22}$/;
+
+/** A Spotify *song* id, from `open.spotify.com/track/…` (with or without an
+ *  `intl-xx` segment) or a `spotify:track:…` uri.
+ *
+ *  Songs only. Since Feb 2026 Spotify withholds the tracklist of any playlist
+ *  the app's own user doesn't own, so playlist and album links have no
+ *  sanctioned way in. `spotify.link` short links are refused too: resolving one
+ *  means fetching a user-supplied url, which is the SSRF this file avoids. */
+export function parseSpotifyTrack(input: string): string | null {
+  const s = input.trim();
+  const uri = /^spotify:track:([A-Za-z0-9]{22})$/.exec(s);
+  if (uri) return uri[1];
+
+  let url: URL;
+  try {
+    url = new URL(s);
+  } catch {
+    return null;
+  }
+  if (url.protocol !== "https:" || url.hostname !== "open.spotify.com") return null;
+
+  const segments = url.pathname.split("/").filter(Boolean);
+  if (segments[0]?.startsWith("intl-")) segments.shift();
+  if (segments.length !== 2 || segments[0] !== "track") return null;
+  return SPOTIFY_ID.test(segments[1]) ? segments[1] : null;
+}
+
+export type PastedLink =
+  | { kind: "video"; id: string }
+  | { kind: "list"; id: string }
+  | { kind: "spotify"; id: string };
 
 /** What did the user actually paste?
  *
@@ -151,6 +182,9 @@ export function classifyLink(input: string): PastedLink | null {
 
   const list = parseListId(input);
   if (list) return { kind: "list", id: list };
+
+  const song = parseSpotifyTrack(input);
+  if (song) return { kind: "spotify", id: song };
 
   return null;
 }
