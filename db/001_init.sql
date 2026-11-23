@@ -65,6 +65,9 @@ create index if not exists playlists_curated_idx
   on playlists (created_at desc)
   where curated and not hidden;
 
+-- v0.1: for a table created before `public` existed. No-op on a fresh one.
+alter table playlists add column if not exists public boolean not null default false;
+
 create index if not exists playlists_public_idx
   on playlists (created_at desc)
   where public and not hidden and not curated;

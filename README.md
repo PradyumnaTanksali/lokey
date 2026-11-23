@@ -8,8 +8,10 @@ Two rooms, one player.
 - **`/forecast`** — pick the weather, it gets scored in lofi: Downpour, Golden
   Hour, Fog, Small Hours.
 - **`/curated`** — rooms put together by hand.
-- **`/playlists`** — paste YouTube links, get a 10-character share code, send it
-  on. No sign-up, no accounts, nothing public.
+- **`/playlists`** — paste YouTube or Spotify song links, get a 10-character
+  share code, send it on. No sign-up, no accounts. Unlisted unless you tick
+  *Show in Global*.
+- **`/global`** — playlists people chose to list. Opt-in per playlist, noindex.
 
 Audio comes from the YouTube IFrame API. **The player is visible on purpose and
 must stay that way** — see the compliance note below before changing it.
@@ -149,12 +151,22 @@ psql "$DATABASE_URL_UNPOOLED" -f db/001_init.sql
 4. Optional, for playlist import: enable **YouTube Data API v3** in Google
    Cloud, create an API key, add it as `YOUTUBE_API_KEY`. Without it, importing
    a playlist link declines cleanly and adding songs one at a time still works.
-   Quota is 10,000 units/day; a 100-track import costs 3.
-5. In Vercel's Firewall settings, add one rate-limit rule keyed on IP against
+   Quota is 10,000 units/day; a 100-track import costs 3. The same key turns
+   on Spotify song links, which cost **100 units each** (one `search.list`), so
+   the free quota is ~100 Spotify songs/day across all users.
+5. Optional, for better Spotify matches: a Spotify Developer app's
+   `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` (client credentials) adds the
+   artist to the YouTube search. Development-mode apps need the owner on
+   Spotify Premium. Without them the song is matched on its title alone.
+   Spotify **playlist** links are refused on purpose: since Feb 2026 Spotify
+   withholds the tracklist of any playlist the app user doesn't own.
+6. In Vercel's Firewall settings, add one rate-limit rule keyed on IP against
    `POST /api/playlists`. Hobby allows exactly one rule, which is why creation
    is a Route Handler with a stable path rather than a Server Action.
 
 Curated rooms are ordinary rows with `curated = true`; seed them by hand.
+Moderating Global is `update playlists set hidden = true where share_code = '…'`;
+the page drops it within the hour (its ISR window).
 
 **Do not add a keep-warm cron.** Neon Free scales to zero after 5 minutes and
 gives 100 CU-hours/month; a pinger costs ~182 CU-hours to avoid a one-second
@@ -162,4 +174,6 @@ cold start, which exhausts the quota instead. Cache reads.
 
 ## Deploy
 
-Vercel, at [lokey.corsw.in](https://lokey.corsw.in). `main` is production.
+Vercel (team `corsw`), at [lokey.corsw.in](https://lokey.corsw.in). `main` is
+production, deployed with the CLI from a clean `git archive` of `main` — the
+project is not git-connected.

@@ -21,6 +21,8 @@ const YT = "https://www.googleapis.com/youtube/v3";
 
 type Song = { title: string; artist: string };
 
+// ponytail: concurrent cold requests each fetch a token (last write wins, all
+// valid). Cache the pending promise if Spotify ever rate-limits the burst.
 let token: { value: string; expires: number } | null = null;
 
 /** Client-credentials token, reused until a minute before it lapses. Null when
